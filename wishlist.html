@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - SSD Fashion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Top Navigation Bar (Same as index.html) -->
+    <nav class="bg-gray-100 px-4 py-3 sticky top-0 z-40 shadow-sm">
+        <div class="flex items-center justify-between max-w-7xl mx-auto">
+            <!-- Left: Menu and Search -->
+            <div class="flex items-center space-x-4">
+                <button class="p-1">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <button class="p-1">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+            </div>
+            
+            <!-- Center: Logo -->
+            <a href="index.html" class="text-xl font-bold text-gray-800 tracking-wider">SSD FASHION</a>
+            
+            <!-- Right: User, Wishlist, Cart -->
+            <div class="flex items-center space-x-4">
+                <a href="wishlist.html" id="wishlist-button" class="p-1">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                </a>
+                <a href="cart.html" id="cart-button" class="p-1 relative">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center hidden">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Your Wishlist</h1>
+
+        <div id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+            <!-- Wishlist items will be injected here by JS -->
+            <p id="wishlist-loading" class="col-span-full text-center text-gray-500">Loading your wishlist...</p>
+        </div>
+    </main>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDglDGMO-cknnl7JR7cD89_4yWdLRkvLBY",
+            authDomain: "ssdfashion-af744.firebaseapp.com",
+            projectId: "ssdfashion-af744",
+            storageBucket: "ssdfashion-af744.appspot.com",
+            messagingSenderId: "233163735482",
+            appId: "1:233163735482:web:14ecbc0b46a28fb02e9d83"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        const wishlistGrid = document.getElementById('wishlist-grid');
+        const wishlistLoading = document.getElementById('wishlist-loading');
+        
+        let wishlistUnsubscribe = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                loadWishlist(user.uid);
+            } else {
+                if (wishlistUnsubscribe) wishlistUnsubscribe();
+                wishlistGrid.innerHTML = `
+                    <div class="col-span-full bg-white p-8 rounded-lg shadow-md text-center">
+                        <h2 class="text-xl font-semibold mb-2">Your wishlist is empty!</h2>
+                        <p class="text-gray-600 mb-4">Please log in to see your saved items.</p>
+                        <a href="index.html" class="bg-teal-600 text-white font-bold py-2 px-4 rounded-md hover:bg-teal-700 transition">
+                            Login & Continue Shopping
+                        </a>
+                    </div>
+                `;
+                wishlistLoading.classList.add('hidden');
+            }
+        });
+
+        function loadWishlist(userId) {
+            const wishlistRef = collection(db, 'wishlists', userId, 'items');
+
+            wishlistUnsubscribe = onSnapshot(wishlistRef, (snapshot) => {
+                wishlistLoading.classList.add('hidden');
+
+                if (snapshot.empty) {
+                    wishlistGrid.innerHTML = `
+                         <div class="col-span-full bg-white p-8 rounded-lg shadow-md text-center">
+                            <h2 class="text-xl font-semibold mb-2">Your wishlist is empty!</h2>
+                            <p class="text-gray-600 mb-4">You haven't saved any items yet.</p>
+                            <a href="index.html" class="bg-teal-600 text-white font-bold py-2 px-4 rounded-md hover:bg-teal-700 transition">
+                                Discover Products
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                wishlistGrid.innerHTML = ''; 
+
+                snapshot.docs.forEach(docSnap => {
+                    const item = docSnap.data();
+                    const itemElement = createWishlistItemElement(docSnap.id, item);
+                    wishlistGrid.appendChild(itemElement);
+                });
+
+            }, (error) => {
+                console.error("Error loading wishlist:", error);
+                wishlistLoading.textContent = "Could not load your wishlist. Please try again.";
+            });
+        }
+
+        function createWishlistItemElement(itemId, item) {
+            const div = document.createElement('div');
+            div.className = 'group';
+
+            const displayImage = item.imageUrl || 'https://placehold.co/400x500/f0f0f0/666?text=No+Image';
+
+            div.innerHTML = `
+                <div class="relative overflow-hidden rounded-lg bg-gray-100">
+                    <a href="product-detail.html?id=${itemId}">
+                        <img src="${displayImage}" alt="${item.name}" class="w-full h-80 object-cover object-center group-hover:scale-105 transition-transform duration-300">
+                    </a>
+                    <button class="remove-wishlist-item absolute top-2 right-2 bg-white rounded-full p-2 text-gray-500 hover:text-red-500 transition-colors shadow" data-id="${itemId}">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+                    </button>
+                </div>
+                <div class="mt-4">
+                    <p class="text-xl font-bold text-gray-900">$${item.price.toFixed(2)}</p>
+                    <p class="text-sm text-gray-500">${item.brand}</p>
+                    <p class="mt-1 text-gray-800">${item.name}</p>
+                </div>
+            `;
+
+            div.querySelector('.remove-wishlist-item').addEventListener('click', async (e) => {
+                const docId = e.currentTarget.getAttribute('data-id');
+                const userId = auth.currentUser.uid;
+                if (!userId) return;
+                
+                try {
+                    await deleteDoc(doc(db, 'wishlists', userId, 'items', docId));
+                } catch(error) {
+                    console.error("Error removing item from wishlist:", error);
+                    alert("Could not remove item. Please try again.");
+                }
+            });
+
+            return div;
+        }
+    </script>
+</body>
+</html>

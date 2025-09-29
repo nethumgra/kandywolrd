@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KANDY WORLD - Premium Men's Wear</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* Applying Poppins Font to the entire site */
+        body { font-family: 'Poppins', sans-serif; }
+
+        .sidebar-panel { transition: transform 0.3s ease-in-out; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #888; border-radius: 5px;}
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: grid; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Style to handle the scroll locking */
+        .no-scroll {
+            overflow: hidden;
+        }
+        
+        /* Swiper Pagination color */
+        .swiper-pagination-bullet-active {
+            background-color: #facc15; /* yellow-400 */
+        }
+        /* Applying Playfair Display to the brand name and main headings */
+.font-black, h2, h3 {
+    font-family: 'Playfair Display', serif;
+}
+    </style>
+</head>
+
+<body class="bg-white min-h-screen text-gray-800">
+  <div id="preloader" class="fixed inset-0 bg-white z-50 grid place-items-center">
+    <div class="w-20 h-20 border-4 border-gray-200 border-t-black rounded-full animate-spin col-start-1 row-start-1"></div>
+    <img src="https://i.ibb.co/PyNpHPH/Untitled-design-3.png" alt="Kandy World Logo Loading" class="h-14 w-auto col-start-1 row-start-1">
+</div>
+
+<script>
+    // Page eke siyalu de (images, etc.) load wela iwara unama me function eka run wenawa
+    window.onload = function() {
+        // Preloader eka ID eken select karagannawa
+        const preloader = document.getElementById('preloader');
+        
+        if (preloader) {
+            // Fade out effect eka start karanna class add karanawa
+            preloader.classList.add('transition-opacity', 'duration-500', 'opacity-0');
+            
+            // Milliseconds 500kata passe (fade out wela iwara unama), preloader eka sampurnayenma ain karanawa
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+            }, 500); 
+        }
+    };
+</script>
+
+
+    <div class="bg-black text-white text-center py-2 text-sm">
+        Free Island-wide Delivery on Orders Over Rs. 5000!
+    </div>
+
+    <nav class="bg-white text-gray-800 px-4 py-4 sticky top-0 z-40 shadow-sm border-b">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center">
+    <a href="index.html" class="flex items-center">
+        <img src="https://i.ibb.co/PyNpHPH/Untitled-design-3.png" alt="Kandy World Logo" class="h-10 mr-3">
+        <span class="text-2xl font-black tracking-wider text-black">KANDY WORLD</span>
+    </a>
+</div>
+    
+            <div class="hidden lg:flex flex-grow max-w-xl mx-8">
+                <form id="desktop-search-form" class="w-full flex items-center border border-gray-300 rounded-md">
+                    <div class="relative">
+                        <select class="pl-4 pr-8 py-2 bg-gray-100 rounded-l-md border-r border-gray-300 text-sm focus:outline-none appearance-none">
+                            <option>All</option>
+                            <option>T-Shirts</option>
+                            <option>Long Sleeves</option>
+                            <option>Shorts</option>
+                        </select>
+                    </div>
+                    <input type="text" id="desktop-search-input" placeholder="I'm shopping for..." class="w-full py-2 px-4 text-gray-900 placeholder-gray-500 focus:outline-none">
+                    <button type="submit" class="px-6 py-2 bg-black text-white font-semibold rounded-r-md hover:bg-gray-800">
+                        Search
+                    </button>
+                </form>
+            </div>
+    
+            <div class="flex items-center space-x-6">
+                <a href="cart.html" id="cart-button" class="flex items-center gap-2 hover:text-teal-600 relative">
+                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.658-.463 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
+                </a>
+                 <button id="user-button" class="flex items-center gap-2 hover:text-teal-600">
+                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                    <span id="user-text" class="text-sm hidden md:block">Log in / Register</span>
+                </button>
+            </div>
+        </div>
+    
+        <div class="mt-3 lg:hidden">
+            <form id="mobile-search-form" class="w-full">
+                <div class="relative">
+                    <input type="text" id="mobile-search-input" placeholder="I'm shopping for..." class="w-full py-2 pl-4 pr-12 rounded-md text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                    <button type="submit" class="absolute inset-y-0 right-0 flex items-center px-4 bg-black rounded-r-md">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </nav>
+     
+<header>
+    <div class="relative">
+        <div class="swiper heroSwiper w-full aspect-[4/3] sm:aspect-[16/9] md:aspect-[16/8] lg:aspect-[16/6]">
+            <div class="swiper-wrapper">
+
+                <div class="swiper-slide">
+                    <picture>
+                        <source media="(min-width: 1024px)" srcset="https://i.ibb.co/gZnR7qLK/LINEN-SHIRTS-22.png">
+                        <source media="(min-width: 768px)" srcset="https://i.ibb.co/zV3LJQ1h/LINEN-SHIRTS-28.png">
+                        <img src="https://i.ibb.co/spmpQj4g/LINEN-SHIRTS-31.png" class="w-full h-full object-cover" alt="Super Fins Hero Image 1" />
+                    </picture>
+                </div>
+
+                <div class="swiper-slide">
+                    <picture>
+                        <source media="(min-width: 1024px)" srcset="https://i.ibb.co/RdkbfyF/LINEN-SHIRTS-24.png">
+                        <source media="(min-width: 768px)" srcset="https://i.ibb.co/MDkCfXzr/LINEN-SHIRTS-29.png">
+                        <img src="https://i.ibb.co/ynTz9RMp/LINEN-SHIRTS-34.png" class="w-full h-full object-cover" alt="Watersports Action" />
+                    </picture>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+</header>
+
+
+  <section class="bg-white pt-10 pb-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+            <div id="category-scroller" class="flex space-x-4 overflow-x-auto snap-x snap-mandatory no-scrollbar p-2">
+                <a href="#" class="group relative block aspect-square flex-shrink-0 w-2/5 md:w-1/4 snap-start">
+                    <img src="https://i.ibb.co/q33nKzHp/1.png" alt="Mens Linen Pants" class="w-full h-full object-cover rounded-md">
+                    <div class="absolute inset-0 flex items-end p-4">
+                        <h3 class="text-black text-sm font-semibold uppercase drop-shadow-md bg-white bg-opacity-70 px-2 py-1 rounded">Mens Linen Pants</h3>
+                    </div>
+                </a>
+                <a href="#" class="group relative block aspect-square flex-shrink-0 w-2/5 md:w-1/4 snap-start">
+                    <img src="https://i.ibb.co/mrrtqNSx/2.png" alt="Ladies linen Pants" class="w-full h-full object-cover rounded-md">
+                    <div class="absolute inset-0 flex items-end p-4">
+                        <h3 class="text-black text-sm font-semibold uppercase drop-shadow-md bg-white bg-opacity-70 px-2 py-1 rounded">Ladies linen Pants</h3>
+                    </div>
+                </a>
+                <a href="#" class="group relative block aspect-square flex-shrink-0 w-2/5 md:w-1/4 snap-start">
+                    <img src="https://i.ibb.co/dwLZmCj3/3.png" alt="Ladies Linen Shorts" class="w-full h-full object-cover rounded-md">
+                    <div class="absolute inset-0 flex items-end p-4">
+                        <h3 class="text-black text-sm font-semibold uppercase drop-shadow-md bg-white bg-opacity-70 px-2 py-1 rounded">Ladies Linen Shorts</h3>
+                    </div>
+                </a>
+                <a href="#" class="group relative block aspect-square flex-shrink-0 w-2/5 md:w-1/4 snap-start">
+                    <img src="https://i.ibb.co/Nn6L382j/4.png" alt="Viscose Casual shirts" class="w-full h-full object-cover rounded-md">
+                    <div class="absolute inset-0 flex items-end p-4">
+                        <h3 class="text-black text-sm font-semibold uppercase drop-shadow-md bg-white bg-opacity-70 px-2 py-1 rounded"> Viscose Casual shirts</h3>
+                    </div>
+                </a>
+                <a href="#" class="group relative block aspect-square flex-shrink-0 w-2/5 md:w-1/4 snap-start">
+                    <img src="https://i.ibb.co/ynYTNGwm/5.png" alt="Casual Linen Shirts" class="w-full h-full object-cover rounded-md">
+                    <div class="absolute inset-0 flex items-end p-4">
+                        <h3 class="text-black text-sm font-semibold uppercase drop-shadow-md bg-white bg-opacity-70 px-2 py-1 rounded">Casual Linen Shirts</h3>
+                    </div>
+                </a>
+                
+            </div>
+        </div>
+    </section>
+    
+    <div id="product-grid-container" class="max-w-7xl mx-auto px-4 pt-2 pb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-x-8">
+            <aside id="desktop-filter-panel" class="hidden lg:block lg:col-span-1">
+                <div class="space-y-8 sticky top-28">
+                    <div class="border-b pb-6">
+                 
+                        <input type="text" id="desktop-brand-search" placeholder="Search Brand" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm mb-3">
+                        <div id="desktop-brand-filter-list" class="space-y-2">
+                            <p class="text-xs text-gray-400">Loading brands...</p>
+                        </div>
+                    </div>
+                    <div class="border-b pb-6">
+                        <h3 class="font-semibold mb-4 text-lg">Category</h3>
+                        <div id="desktop-category-filter-list" class="space-y-2"><p class="text-xs text-gray-400">Loading categories...</p></div>
+                    </div>
+                    <div class="pb-6">
+                        <h3 class="font-semibold mb-2 text-lg">Size</h3>
+                        <div class="border-b border-gray-200">
+                            <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                                <button class="size-tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-teal-500 text-teal-600" data-tab="brand-size">Brand Size</button>
+                                <button class="size-tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="eu">EU</button>
+                            </nav>
+                        </div>
+                        <div class="mt-4">
+                            <div id="desktop-size-filter-list">
+                                <div class="tab-panel active grid grid-cols-4 gap-2" data-panel="brand-size">
+                                    <button data-size="XXS" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">XXS</button>
+                                    <button data-size="XS" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">XS</button>
+                                    <button data-size="S" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">S</button>
+                                    <button data-size="M" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">M</button>
+                                    <button data-size="L" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">L</button>
+                                    <button data-size="XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">XL</button>
+                                    <button data-size="2XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">2XL</button>
+                                    <button data-size="3XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">3XL</button>
+                                    <button data-size="4XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">4XL</button>
+                                    <button data-size="5XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">5XL</button>
+                                </div>
+                                <div class="tab-panel" data-panel="eu"><p class="text-xs text-gray-400">EU sizes not available.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t pt-6">
+                         <h3 class="font-semibold mb-2 text-lg">Price Range</h3>
+                         <div class="flex items-center space-x-2">
+                             <input type="number" id="desktop-min-price" placeholder="Min" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" min="0">
+                             <span class="text-gray-500">-</span>
+                             <input type="number" id="desktop-max-price" placeholder="Max" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" min="0">
+                         </div>
+                    </div>
+                    <div class="pt-4 flex flex-col space-y-2">
+                         <button id="desktop-apply-filters-btn" class="w-full bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">Apply</button>
+                         <button id="desktop-clear-filters-btn" class="w-full bg-gray-200 text-gray-800 font-bold py-2.5 rounded-md hover:bg-gray-300 transition">Clear All</button>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <div id="main-content-area">
+                    <p class="col-span-full text-center text-gray-500 text-lg">Loading...</p>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <div id="mobile-filter-sidebar" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden lg:hidden">
+        <div id="mobile-filter-panel" class="sidebar-panel absolute top-0 left-0 h-full w-full max-w-sm bg-white shadow-xl transform -translate-x-full flex flex-col">
+            <div class="flex items-center justify-between p-4 border-b">
+                <h2 class="text-lg font-semibold">Filters</h2>
+                <button id="close-filter-btn" class="p-2 rounded-full hover:bg-gray-100"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-4 space-y-6 overflow-y-auto flex-grow custom-scrollbar">
+                <div>
+                    <h3 class="font-semibold mb-2">Brand</h3>
+                    <input type="text" id="mobile-brand-search" placeholder="Search Brand" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm mb-3">
+                    <div id="mobile-brand-filter-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">Category</h3>
+                    <div id="mobile-category-filter-list" class="space-y-2"></div>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">Size</h3>
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex space-x-4" aria-label="Tabs">
+                            <button class="size-tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-teal-500 text-teal-600" data-tab="brand-size">Brand Size</button>
+                            <button class="size-tab whitespace-nowrap py-3 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500" data-tab="eu">EU</button>
+                        </nav>
+                    </div>
+                    <div class="mt-4">
+                        <div id="mobile-size-filter-list">
+                            <div class="tab-panel active grid grid-cols-4 gap-2" data-panel="brand-size">
+                                <button data-size="XXS" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">XXS</button>
+                                <button data-size="XS" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">XS</button>
+                                <button data-size="S" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">S</button>
+                                <button data-size="M" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">M</button>
+                                <button data-size="L" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">L</button>
+                                <button data-size="XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">XL</button>
+                                <button data-size="2XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">2XL</button>
+                                <button data-size="3XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">3XL</button>
+                                <button data-size="4XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">4XL</button>
+                                <button data-size="5XL" class="size-btn p-2 border border-gray-300 rounded-md text-sm hover:border-black">5XL</button>
+                            </div>
+                            <div class="tab-panel" data-panel="eu"><p class="text-xs text-gray-400">EU sizes not available.</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">Price Range</h3>
+                    <div class="flex items-center space-x-2">
+                        <input type="number" id="mobile-min-price" placeholder="Min" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" min="0">
+                        <span class="text-gray-500">-</span>
+                        <input type="number" id="mobile-max-price" placeholder="Max" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" min="0">
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t bg-white flex space-x-2">
+                <button id="mobile-clear-filters-btn" class="w-1/2 bg-gray-200 text-gray-800 font-bold py-2.5 rounded-md hover:bg-gray-300 transition">Clear All</button>
+                <button id="mobile-apply-filters-btn" class="w-1/2 bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+         <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+             <div class="flex border-b">
+                 <button id="login-tab" class="flex-1 py-3 font-semibold text-center bg-gray-100 text-gray-800 rounded-tl-lg">Login</button>
+                 <button id="signup-tab" class="flex-1 py-3 font-semibold text-center bg-white text-gray-500">Sign Up</button>
+             </div>
+             <div class="p-8">
+                 <form id="login-form" class="space-y-4">
+                     <div>
+                         <label for="login-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                         <input type="email" id="login-email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                     </div>
+                     <div>
+                         <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
+                         <input type="password" id="login-password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                     </div>
+                     <button type="submit" class="w-full bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">Login</button>
+                 </form>
+                 <form id="signup-form" class="space-y-4 hidden">
+                     <div>
+                         <label for="signup-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                         <input type="email" id="signup-email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                     </div>
+                     <div>
+                         <label for="signup-password" class="block text-sm font-medium text-gray-700">Password</label>
+                         <input type="password" id="signup-password" minlength="6" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                         <p class="text-xs text-gray-500 mt-1">Must be at least 6 characters long.</p>
+                     </div>
+                     <button type="submit" class="w-full bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">Create Account</button>
+                 </form>
+                 <div class="relative flex py-5 items-center">
+                     <div class="flex-grow border-t border-gray-200"></div>
+                     <span class="flex-shrink mx-4 text-xs text-gray-400 uppercase">Or</span>
+                     <div class="flex-grow border-t border-gray-200"></div>
+                 </div>
+                 <button id="google-signin-btn" class="w-full flex items-center justify-center py-2.5 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                     <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C12.955 4 4 12.955 4 24s8.955 20 20 20s20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4C16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.223 0-9.641-3.657-11.297-8.591l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.574l6.19 5.238C42.012 35.245 44 30.024 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>
+                     Sign in with Google
+                 </button>
+                 <p id="auth-error" class="text-red-500 text-sm mt-4 text-center"></p>
+             </div>
+         </div>
+    </div>
+    
+    <div id="user-info-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
+            <h2 class="text-lg font-medium text-gray-900">Welcome!</h2>
+            <p id="user-email-display" class="mt-2 text-sm text-gray-600 truncate"></p>
+            <a href="my-orders.html" id="my-orders-button" class="mt-4 w-full block bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">My Orders</a>
+            <button id="logout-button" class="mt-2 w-full bg-red-600 text-white font-bold py-2.5 rounded-md hover:bg-red-700 transition">Logout</button>
+            <button id="close-user-modal" class="mt-2 w-full text-gray-600 text-sm py-2">Close</button>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">KANDY WORLD</h3>
+                    <p class="text-gray-400 text-sm">
+                        Discover premium quality t-shirts designed for comfort and style. Your new favorite tee awaits.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Shop</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-white">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">T-Shirts</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Long Sleeves</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Shorts</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Help</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Shipping & Returns</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Size Guide</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Stay Connected</h3>
+                    <p class="text-gray-400 text-sm mb-3">Get exclusive deals and updates straight to your inbox.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your Email" class="w-full rounded-l-md py-2 px-3 text-gray-800 focus:outline-none">
+                        <button type="submit" class="bg-teal-600 hover:bg-teal-700 rounded-r-md px-4 py-2 font-semibold">Go</button>
+                    </form>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.675 0h-21.35C.59 0 0 .59 0 1.325v21.351C0 23.41.59 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.735 0 1.325-.59 1.325-1.325V1.325C24 .59 23.41 0 22.675 0z"></path></svg></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616v.064c0 2.294 1.634 4.208 3.803 4.649-.623.169-1.272.23-1.933.23-.3 0-.594-.029-.884-.084.618 1.884 2.408 3.258 4.533 3.3-1.625 1.27-3.673 2.022-5.904 2.022-.383 0-.76-.022-1.13-.066 2.099 1.353 4.606 2.148 7.321 2.148 8.778 0 13.59-7.278 13.59-13.59 0-.205-.005-.409-.013-.612.932-.672 1.738-1.512 2.379-2.465z"></path></svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-400">
+                <p>&copy; 2025 KANDY WORLD. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy, where, onSnapshot, doc, setDoc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    // --- Firebase Config ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyDglDGMO-cknnl7JR7cD89_4yWdLRkvLBY",
+        authDomain: "ssdfashion-af744.firebaseapp.com",
+        projectId: "ssdfashion-af744",
+        storageBucket: "ssdfashion-af744.appspot.com",
+        messagingSenderId: "233163735482",
+        appId: "1:233163735482:web:14ecbc0b46a28fb02e9d83"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    
+    // --- DOM Elements ---
+    const mainContentArea = document.getElementById('main-content-area');
+    const userButton = document.getElementById('user-button');
+    const mobileFilterSidebar = document.getElementById('mobile-filter-sidebar');
+    const mobileFilterPanel = document.getElementById('mobile-filter-panel');
+    const closeFilterBtn = document.getElementById('close-filter-btn');
+    const authModal = document.getElementById('auth-modal');
+    const userInfoModal = document.getElementById('user-info-modal');
+    const userText = document.getElementById('user-text');
+    
+    // --- Global State ---
+    let currentFilters = {};
+    let currentSort = { field: 'createdAt', direction: 'desc' };
+    let wishlistedProductIds = new Set();
+    let cartListener = null;
+    let wishlistListener = null;
+
+    // --- Icons ---
+    const heartIconEmpty = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"></path></svg>`;
+    const heartIconFilled = `<svg class="w-6 h-6" fill="currentColor" class="text-red-500" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>`;
+    const starFilledIcon = `<svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+    const starEmptyIcon = `<svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+
+    const isMobileView = () => window.innerWidth < 1024;
+
+    function setupHeroSlider() {
+        const swiper = new Swiper('.hero-slider', {
+            loop: true,
+            effect: 'fade',
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+    }
+
+    function setupCategoryAutoSlide() {
+        const scroller = document.getElementById('category-scroller');
+        if (!scroller) return;
+        let slideInterval;
+        const startSliding = () => {
+            slideInterval = setInterval(() => {
+                const firstItem = scroller.querySelector('a');
+                if (!firstItem) return;
+                const scrollAmount = firstItem.offsetWidth + 16;
+                let newScrollLeft = scroller.scrollLeft + scrollAmount;
+                if (newScrollLeft + scroller.clientWidth > scroller.scrollWidth) {
+                    newScrollLeft = 0;
+                }
+                scroller.scrollTo({ left: newScrollLeft, behavior: 'smooth' });
+            }, 3000);
+        };
+        const stopSliding = () => clearInterval(slideInterval);
+        scroller.addEventListener('mouseenter', stopSliding);
+        scroller.addEventListener('mouseleave', startSliding);
+        startSliding();
+    }
+
+    async function populateFilterOptions() {
+        try {
+            const [productsSnapshot, categoriesSnapshot] = await Promise.all([
+                getDocs(collection(db, "products")),
+                getDocs(collection(db, "categories"))
+            ]);
+            
+            const allProducts = productsSnapshot.docs.map(doc => doc.data());
+            
+            const brands = [...new Set(allProducts.map(p => p.brand).filter(Boolean))].sort();
+            const brandHTML = brands.map(brand => `<label class="flex items-center space-x-2 text-sm cursor-pointer"><input type="checkbox" value="${brand}" class="rounded text-teal-600 focus:ring-teal-500"><span>${brand}</span></label>`).join('');
+            document.getElementById('desktop-brand-filter-list').innerHTML = brandHTML || '<p class="text-xs text-gray-400">No brands found.</p>';
+            document.getElementById('mobile-brand-filter-list').innerHTML = brandHTML || '<p class="text-xs text-gray-400">No brands found.</p>';
+
+            const categories = categoriesSnapshot.docs.map(doc => doc.data().name).sort();
+            const categoryHTML = categories.map(cat => `<label class="flex items-center space-x-2 text-sm cursor-pointer"><input type="checkbox" value="${cat}" class="rounded text-teal-600 focus:ring-teal-500"><span>${cat}</span></label>`).join('');
+            
+            document.getElementById('desktop-category-filter-list').innerHTML = categoryHTML || '<p class="text-xs text-gray-400">No categories found.</p>';
+            document.getElementById('mobile-category-filter-list').innerHTML = categoryHTML || '<p class="text-xs text-gray-400">No categories found.</p>';
+            
+        } catch (error) { 
+            console.error("Could not populate filters:", error); 
+            document.getElementById('desktop-category-filter-list').innerHTML = '<p class="text-xs text-red-500">Error loading categories.</p>';
+            document.getElementById('mobile-category-filter-list').innerHTML = '<p class="text-xs text-red-500">Error loading categories.</p>';
+        }
+    }
+    
+    function renderDesktopHeaderAndFilters(isFilteredView = false) {
+        const headerContainer = document.createElement('div');
+        
+        if (isFilteredView) {
+            const titleRow = document.createElement('div');
+            titleRow.className = 'flex items-center justify-between mb-6';
+            
+            let title = 'Filtered Results';
+            const hasOnlyCategoryFilter = currentFilters.categories?.length > 0 && !currentFilters.brands?.length && currentFilters.sizes?.length === 0 && currentFilters.minPrice == null && currentFilters.maxPrice == null;
+            if (hasOnlyCategoryFilter) {
+                title = currentFilters.categories.join(' & ');
+            }
+            
+            titleRow.innerHTML = `<h1 class="text-3xl md:text-4xl font-bold text-gray-900">${title}</h1>`;
+            
+            const sortSelect = document.createElement('select');
+            sortSelect.id = 'sort-select';
+            sortSelect.className = 'px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-700';
+            sortSelect.innerHTML = `<option value="createdAt-desc">Sort by: Newest</option><option value="price-asc">Price: Low to High</option><option value="price-desc">Price: High to Low</option>`;
+            sortSelect.value = `${currentSort.field}-${currentSort.direction}`;
+            sortSelect.addEventListener('change', (e) => {
+                const [field, direction] = e.target.value.split('-');
+                currentSort = { field, direction };
+                loadProducts();
+            });
+            titleRow.appendChild(sortSelect);
+            headerContainer.appendChild(titleRow);
+        }
+        return headerContainer;
+    }
+
+    function renderMobileHeader() {
+        const headerContainer = document.createElement('div');
+        headerContainer.className = 'sticky top-0 z-10 bg-white pb-4';
+        
+        const filterButton = document.createElement('button');
+        filterButton.className = 'w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-md font-semibold bg-teal-600 text-white hover:bg-teal-700 transition-colors';
+        filterButton.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg><span>Filter & Sort</span>`;
+        filterButton.onclick = () => toggleMobileFilterSidebar(true);
+        
+        headerContainer.appendChild(filterButton);
+        return headerContainer;
+    }
+
+    function toggleMobileFilterSidebar(show) {
+        if (show) {
+            mobileFilterSidebar.classList.remove('hidden');
+            setTimeout(() => mobileFilterPanel.classList.remove('-translate-x-full'), 10);
+        } else {
+            mobileFilterPanel.classList.add('-translate-x-full');
+            setTimeout(() => mobileFilterSidebar.classList.add('hidden'), 300);
+        }
+    }
+        
+    function applyFilters() {
+        const sourcePrefix = isMobileView() ? 'mobile' : 'desktop';
+        const panel = document.getElementById(`${sourcePrefix}-filter-panel`);
+        currentFilters = {};
+        currentFilters.brands = [...panel.querySelectorAll(`#${sourcePrefix}-brand-filter-list input:checked`)].map(cb => cb.value);
+        currentFilters.categories = [...panel.querySelectorAll(`#${sourcePrefix}-category-filter-list input:checked`)].map(cb => cb.value);
+        currentFilters.sizes = [...panel.querySelectorAll('.size-btn.bg-black')].map(btn => btn.dataset.size);
+        const minPrice = parseFloat(panel.querySelector(`#${sourcePrefix}-min-price`).value);
+        if (!isNaN(minPrice)) currentFilters.minPrice = minPrice; else delete currentFilters.minPrice;
+        const maxPrice = parseFloat(panel.querySelector(`#${sourcePrefix}-max-price`).value);
+        if (!isNaN(maxPrice)) currentFilters.maxPrice = maxPrice; else delete currentFilters.maxPrice;
+        if (isMobileView()) toggleMobileFilterSidebar(false);
+        loadProducts();
+    }
+
+    function clearFilters() {
+        currentFilters = {};
+        loadProducts();
+    }
+    
+    function updateFilterUIs() {
+        ['mobile', 'desktop'].forEach(view => {
+            const panel = document.getElementById(`${view}-filter-panel`);
+            if (!panel) return;
+            panel.querySelector(`#${view}-min-price`).value = currentFilters.minPrice || '';
+            panel.querySelector(`#${view}-max-price`).value = currentFilters.maxPrice || '';
+            panel.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+            if (currentFilters.brands) currentFilters.brands.forEach(b => {
+                const el = panel.querySelector(`input[value="${b}"]`); if(el) el.checked = true;
+            });
+            if (currentFilters.categories) currentFilters.categories.forEach(c => {
+                 const el = panel.querySelector(`input[value="${c}"]`); if(el) el.checked = true;
+            });
+            panel.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('bg-black', 'text-white'));
+            if (currentFilters.sizes) currentFilters.sizes.forEach(s => {
+                const el = panel.querySelector(`button[data-size="${s}"]`); if(el) el.classList.add('bg-black', 'text-white');
+            });
+        });
+    }
+
+    async function loadAndGroupAllProductsDesktop() {
+        mainContentArea.innerHTML = `<p class="text-center text-gray-500">Loading...</p>`;
+        try {
+            const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
+            const categoriesQuery = query(collection(db, "categories"), orderBy("name"));
+            
+            const [productsSnapshot, categoriesSnapshot] = await Promise.all([
+                getDocs(productsQuery),
+                getDocs(categoriesQuery)
+            ]);
+
+            mainContentArea.innerHTML = '';
+            if (productsSnapshot.empty) {
+                mainContentArea.innerHTML = '<p class="text-center text-gray-500">No products found.</p>'; 
+                return;
+            }
+
+            const categoryImageMap = new Map();
+            categoriesSnapshot.forEach(doc => {
+                const categoryData = doc.data();
+                categoryImageMap.set(categoryData.name, categoryData.imageUrl);
+            });
+
+            const productsByCategory = {};
+            productsSnapshot.forEach(doc => {
+                const product = { id: doc.id, ...doc.data() };
+                const category = product.category || 'Other Products';
+                if (!productsByCategory[category]) {
+                    productsByCategory[category] = [];
+                }
+                productsByCategory[category].push(product);
+            });
+            
+            const sortedCategories = Object.keys(productsByCategory).sort();
+
+            for (const category of sortedCategories) {
+                const imageUrl = categoryImageMap.get(category);
+
+                if (imageUrl) {
+                    const categoryImage = document.createElement('img');
+                    categoryImage.src = imageUrl;
+                    categoryImage.alt = `${category} Banner`;
+                    categoryImage.className = 'w-full h-auto object-cover rounded-lg shadow-md mb-8 mt-8'; 
+                    mainContentArea.appendChild(categoryImage);
+                } else {
+                    const header = document.createElement('h2');
+                    header.className = 'text-2xl font-bold text-gray-800 mb-6 mt-8 border-b pb-2';
+                    header.textContent = category;
+                    mainContentArea.appendChild(header);
+                }
+
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10';
+                productsByCategory[category].forEach(p => grid.appendChild(createProductCardElement(p.id, p)));
+                mainContentArea.appendChild(grid);
+            }
+
+        } catch (error) { 
+            console.error("Error loading grouped products and categories:", error); 
+            mainContentArea.innerHTML = '<p class="text-center text-red-500">Failed to load content.</p>'; 
+        }
+    }
+
+    async function loadAndGroupAllProductsMobile() {
+        mainContentArea.innerHTML = `<p class="text-center text-gray-500">Loading...</p>`;
+        try {
+            mainContentArea.innerHTML = ''; 
+            mainContentArea.appendChild(renderMobileHeader());
+
+            const productsQuery = query(collection(db, "products"), orderBy("createdAt", "desc"));
+            const categoriesQuery = query(collection(db, "categories"), orderBy("name"));
+            
+            const [productsSnapshot, categoriesSnapshot] = await Promise.all([
+                getDocs(productsQuery),
+                getDocs(categoriesQuery)
+            ]);
+
+            if (productsSnapshot.empty) {
+                mainContentArea.innerHTML += '<p class="text-center text-gray-500 mt-4">No products found.</p>'; 
+                return;
+            }
+
+            const categoryImageMap = new Map();
+            categoriesSnapshot.forEach(doc => {
+                const categoryData = doc.data();
+                categoryImageMap.set(categoryData.name, categoryData.imageUrl);
+            });
+
+            const productsByCategory = {};
+            productsSnapshot.forEach(doc => {
+                const product = { id: doc.id, ...doc.data() };
+                const category = product.category || 'Other Products';
+                if (!productsByCategory[category]) {
+                    productsByCategory[category] = [];
+                }
+                productsByCategory[category].push(product);
+            });
+            
+            const sortedCategories = Object.keys(productsByCategory).sort();
+
+            for (const category of sortedCategories) {
+                const imageUrl = categoryImageMap.get(category);
+
+                if (imageUrl) {
+                    const categoryImage = document.createElement('img');
+                    categoryImage.src = imageUrl;
+                    categoryImage.alt = `${category} Banner`;
+                    categoryImage.className = 'w-full h-auto object-cover rounded-lg shadow-md my-6'; 
+                    mainContentArea.appendChild(categoryImage);
+                } else {
+                    const header = document.createElement('h2');
+                    header.className = 'text-xl font-bold text-gray-800 my-6 border-b pb-2';
+                    header.textContent = category;
+                    mainContentArea.appendChild(header);
+                }
+                
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-2 gap-x-4 gap-y-8 mb-8';
+                productsByCategory[category].forEach(p => grid.appendChild(createProductCardElement(p.id, p)));
+                mainContentArea.appendChild(grid);
+            }
+
+        } catch (error) { 
+            console.error("Error loading grouped products for mobile:", error); 
+            mainContentArea.innerHTML = '<p class="text-center text-red-500">Failed to load content.</p>'; 
+        }
+    }
+
+    async function loadProducts() {
+        const hasFilters = Object.values(currentFilters).some(val => Array.isArray(val) ? val.length > 0 : val != null);
+        mainContentArea.innerHTML = `<p class="text-center text-gray-500">Loading...</p>`;
+
+        if (isMobileView()) {
+            if (!hasFilters) {
+                await loadAndGroupAllProductsMobile();
+            } else {
+                mainContentArea.innerHTML = '';
+                mainContentArea.appendChild(renderMobileHeader());
+                const productGrid = document.createElement('div');
+                productGrid.className = 'grid grid-cols-2 gap-x-4 gap-y-8 pt-4';
+                mainContentArea.appendChild(productGrid);
+                
+                let constraints = [];
+                if (currentFilters.brands?.length) constraints.push(where("brand", "in", currentFilters.brands));
+                if (currentFilters.categories?.length) constraints.push(where("category", "in", currentFilters.categories));
+                if (currentFilters.sizes?.length) constraints.push(where("sizes", "array-contains-any", currentFilters.sizes));
+                if (currentFilters.minPrice != null) constraints.push(where("price", ">=", currentFilters.minPrice));
+                if (currentFilters.maxPrice != null) constraints.push(where("price", "<=", currentFilters.maxPrice));
+                
+                constraints.push(orderBy(currentSort.field, currentSort.direction));
+                const finalQuery = query(collection(db, "products"), ...constraints);
+                const querySnapshot = await getDocs(finalQuery);
+                
+                productGrid.innerHTML = '';
+                if (querySnapshot.empty) {
+                    productGrid.innerHTML = `<p class="col-span-full text-center text-gray-500">No products match.</p>`;
+                } else {
+                    querySnapshot.forEach((doc) => productGrid.appendChild(createProductCardElement(doc.id, doc.data())));
+                }
+            }
+        } else {
+            if (!hasFilters) {
+                await loadAndGroupAllProductsDesktop();
+            } else {
+                mainContentArea.innerHTML = '';
+                mainContentArea.appendChild(renderDesktopHeaderAndFilters(true));
+                const productGrid = document.createElement('div');
+                productGrid.className = 'grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10';
+                mainContentArea.appendChild(productGrid);
+                
+                let constraints = [];
+                if (currentFilters.brands?.length) constraints.push(where("brand", "in", currentFilters.brands));
+                if (currentFilters.categories?.length) constraints.push(where("category", "in", currentFilters.categories));
+                if (currentFilters.sizes?.length) constraints.push(where("sizes", "array-contains-any", currentFilters.sizes));
+                if (currentFilters.minPrice != null) constraints.push(where("price", ">=", currentFilters.minPrice));
+                if (currentFilters.maxPrice != null) constraints.push(where("price", "<=", currentFilters.maxPrice));
+
+                constraints.push(orderBy(currentSort.field, currentSort.direction));
+                const finalQuery = query(collection(db, "products"), ...constraints);
+                const querySnapshot = await getDocs(finalQuery);
+                
+                productGrid.innerHTML = '';
+                if (querySnapshot.empty) {
+                    productGrid.innerHTML = '<p class="col-span-full text-center text-gray-500">No products match your criteria.</p>';
+                } else {
+                    querySnapshot.forEach((doc) => productGrid.appendChild(createProductCardElement(doc.id, doc.data())));
+                }
+            }
+        }
+        updateFilterUIs();
+    }
+    
+    function generateStars(rating = 0) {
+        let starsHTML = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                starsHTML += starFilledIcon;
+            } else {
+                starsHTML += starEmptyIcon;
+            }
+        }
+        return starsHTML;
+    }
+
+    function createProductCardElement(productId, product) {
+        const cardWrapper = document.createElement('div');
+        const isWishlisted = wishlistedProductIds.has(productId);
+
+        const imageUrls = product.imageUrls || [];
+        const primaryImage = imageUrls[0] || product.imageUrl || 'https://placehold.co/400x500/f0f0f0/666?text=No+Image';
+        const hoverImage = imageUrls[1] || primaryImage; 
+
+        const rating = product.rating || (Math.random() * 2 + 3).toFixed(1);
+        const reviewCount = product.reviewCount || Math.floor(Math.random() * 50) + 1;
+        const oldPrice = product.oldPrice || product.price * 1.25;
+
+        cardWrapper.innerHTML = `
+            <div class="group relative overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                <a href="product-detail.html?id=${productId}">
+                    <img src="${primaryImage}" alt="${product.name}" class="product-card-image w-full h-auto aspect-[3/4] object-cover object-center transition-all duration-300">
+                </a>
+                <button class="wishlist-btn absolute top-2 right-2 p-2 rounded-full bg-white/80 backdrop-blur-sm text-gray-700 hover:text-red-500 transition-colors" data-product-id="${productId}">
+                    ${isWishlisted ? heartIconFilled : heartIconEmpty}
+                </button>
+            </div>
+            <div class="mt-3 px-1">
+                 <a href="product-detail.html?id=${productId}" class="text-sm text-blue-700 hover:text-blue-900 transition-colors">${product.name}</a>
+                 <div class="flex items-center mt-1">
+                     ${generateStars(rating)}
+                     <span class="text-xs text-gray-500 ml-2">(${reviewCount})</span>
+                 </div>
+                 <div class="mt-2 flex items-center gap-2">
+                      <p class="text-md font-bold text-gray-900">Rs. ${product.price.toLocaleString()}</p>
+                      <p class="text-sm text-gray-500 line-through">Rs. ${oldPrice.toLocaleString()}</p>
+                 </div>
+            </div>`;
+        
+        const imageContainer = cardWrapper.querySelector('.group');
+        const imageElement = cardWrapper.querySelector('.product-card-image');
+
+        if (primaryImage !== hoverImage) {
+            imageContainer.addEventListener('mouseenter', () => {
+                imageElement.src = hoverImage;
+                imageElement.classList.add('scale-105');
+            });
+
+            imageContainer.addEventListener('mouseleave', () => {
+                imageElement.src = primaryImage;
+                imageElement.classList.remove('scale-105');
+            });
+        }
+        
+        return cardWrapper;
+    }
+
+    function updateAllWishlistIcons() {
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            const productId = btn.dataset.productId;
+            const isWishlisted = wishlistedProductIds.has(productId);
+            btn.innerHTML = isWishlisted ? heartIconFilled : heartIconEmpty;
+        });
+    }
+
+    async function toggleWishlistItem(productId) {
+        const user = auth.currentUser;
+        if (!user) { authModal.classList.remove('hidden'); return; }
+        const wishlistRef = doc(db, 'wishlists', user.uid, 'items', productId);
+        try {
+            if (wishlistedProductIds.has(productId)) {
+                await deleteDoc(wishlistRef);
+            } else {
+                const productRef = doc(db, 'products', productId);
+                const productSnap = await getDoc(productRef);
+                if (productSnap.exists()) {
+                    await setDoc(wishlistRef, { ...productSnap.data(), addedAt: new Date() });
+                }
+            }
+        } catch (error) { console.error("Error updating wishlist:", error); }
+    }
+
+    onAuthStateChanged(auth, user => {
+        if (user) {
+            listenToUserData(user.uid);
+            userText.textContent = "My Account";
+        } else {
+            if (wishlistListener) wishlistListener();
+            if (cartListener) cartListener();
+            wishlistedProductIds.clear();
+            updateAllWishlistIcons();
+            document.getElementById('cart-count').classList.add('hidden');
+            userText.textContent = "Log in / Register";
+        }
+    });
+
+    function listenToUserData(userId) {
+        const wishlistRef = collection(db, 'wishlists', userId, 'items');
+        wishlistListener = onSnapshot(wishlistRef, snapshot => {
+            wishlistedProductIds = new Set(snapshot.docs.map(doc => doc.id));
+            updateAllWishlistIcons();
+        });
+        const cartRef = collection(db, 'carts', userId, 'items');
+        cartListener = onSnapshot(cartRef, snapshot => {
+            const count = snapshot.size;
+            const cartCountEl = document.getElementById('cart-count');
+            cartCountEl.textContent = count;
+            cartCountEl.classList.toggle('hidden', count === 0);
+        });
+    }
+
+    function setupAuthModal() {
+        const loginTab = authModal.querySelector('#login-tab');
+        const signupTab = authModal.querySelector('#signup-tab');
+        const loginForm = authModal.querySelector('#login-form');
+        const signupForm = authModal.querySelector('#signup-form');
+        const googleBtn = authModal.querySelector('#google-signin-btn');
+        const authError = authModal.querySelector('#auth-error');
+        const userEmailDisplay = userInfoModal.querySelector('#user-email-display');
+        const logoutButton = userInfoModal.querySelector('#logout-button');
+        const closeUserModal = userInfoModal.querySelector('#close-user-modal');
+
+        userButton.addEventListener('click', () => {
+            if (auth.currentUser) {
+                userEmailDisplay.textContent = auth.currentUser.email;
+                userInfoModal.classList.remove('hidden');
+            } else {
+                authModal.classList.remove('hidden');
+            }
+        });
+        authModal.addEventListener('click', e => { if (e.target === authModal) authModal.classList.add('hidden'); });
+        userInfoModal.addEventListener('click', e => { if (e.target === userInfoModal) userInfoModal.classList.add('hidden'); });
+        closeUserModal.addEventListener('click', () => userInfoModal.classList.add('hidden'));
+
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.replace('bg-white', 'bg-gray-100');
+            signupTab.classList.replace('bg-gray-100', 'bg-white');
+            loginForm.classList.remove('hidden');
+            signupForm.classList.add('hidden');
+        });
+        signupTab.addEventListener('click', () => {
+            signupTab.classList.replace('bg-white', 'bg-gray-100');
+            loginTab.classList.replace('bg-gray-100', 'bg-white');
+            signupForm.classList.remove('hidden');
+            loginForm.classList.add('hidden');
+        });
+
+        loginForm.addEventListener('submit', async e => {
+            e.preventDefault(); authError.textContent = '';
+            try {
+                await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value);
+                authModal.classList.add('hidden');
+            } catch (error) { authError.textContent = error.message; }
+        });
+        signupForm.addEventListener('submit', async e => {
+            e.preventDefault(); authError.textContent = '';
+            try {
+                await createUserWithEmailAndPassword(auth, signupForm['signup-email'].value, signupForm['signup-password'].value);
+                authModal.classList.add('hidden');
+            } catch (error) { authError.textContent = error.message; }
+        });
+        googleBtn.addEventListener('click', async () => {
+            authError.textContent = '';
+            try {
+                await signInWithPopup(auth, new GoogleAuthProvider());
+                authModal.classList.add('hidden');
+            } catch (error) { authError.textContent = error.message; }
+        });
+        logoutButton.addEventListener('click', async () => {
+            await signOut(auth);
+            userInfoModal.classList.add('hidden');
+        });
+    }
+
+    function setupStickyScroll() {
+        if (isMobileView()) return; 
+
+        const productContainer = document.querySelector('#product-grid-container');
+        const mainContent = document.querySelector('main');
+
+        if (!productContainer || !mainContent) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    document.body.classList.remove('no-scroll');
+                } else if (entry.boundingClientRect.top < 0) {
+                    document.body.classList.add('no-scroll');
+                }
+            },
+            { threshold: [0] }
+        );
+
+        observer.observe(productContainer);
+
+        mainContent.addEventListener('scroll', () => {
+            const isAtTop = mainContent.scrollTop === 0;
+            const isAtBottom = mainContent.scrollHeight - mainContent.scrollTop <= mainContent.clientHeight + 1;
+
+            if (document.body.classList.contains('no-scroll')) {
+                if (isAtTop || isAtBottom) {
+                    document.body.classList.remove('no-scroll');
+                }
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        setupAuthModal();
+        await populateFilterOptions();
+        
+        if(!isMobileView()) {
+            setupStickyScroll();
+        }
+        
+        loadProducts();
+        setupHeroSlider();
+        setupCategoryAutoSlide();
+        
+        const searchHandler = (e) => {
+            e.preventDefault();
+            const input = e.target.querySelector('input');
+            const searchTerm = input.value.trim();
+            if (searchTerm) {
+                alert(`You searched for: ${searchTerm}`);
+            }
+        };
+
+        document.getElementById('desktop-search-form').addEventListener('submit', searchHandler);
+        document.getElementById('mobile-search-form').addEventListener('submit', searchHandler);
+
+        ['desktop', 'mobile'].forEach(view => {
+            const panel = document.getElementById(`${view}-filter-panel`);
+            if (!panel) return;
+            const sizeTabs = panel.querySelectorAll('.size-tab');
+            const sizePanels = panel.querySelectorAll('.tab-panel');
+            sizeTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    sizeTabs.forEach(t => t.classList.remove('border-teal-500', 'text-teal-600'));
+                    tab.classList.add('border-teal-500', 'text-teal-600');
+                    sizePanels.forEach(p => p.classList.remove('active'));
+                    panel.querySelector(`[data-panel="${tab.dataset.tab}"]`).classList.add('active');
+                });
+            });
+            panel.querySelectorAll('.size-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    btn.classList.toggle('bg-black');
+                    btn.classList.toggle('text-white');
+                });
+            });
+            panel.querySelector(`#${view}-apply-filters-btn`).addEventListener('click', applyFilters);
+            panel.querySelector(`#${view}-clear-filters-btn`).addEventListener('click', clearFilters);
+        });
+
+        closeFilterBtn.addEventListener('click', () => toggleMobileFilterSidebar(false));
+        mobileFilterSidebar.addEventListener('click', (e) => { if (e.target === mobileFilterSidebar) toggleMobileFilterSidebar(false); });
+        mainContentArea.addEventListener('click', e => {
+            const wishlistBtn = e.target.closest('.wishlist-btn');
+            if (wishlistBtn) toggleWishlistItem(wishlistBtn.dataset.productId);
+        });
+
+          // --- Hero Banner Swiper Initialization ---
+new Swiper('.heroSwiper', {
+    loop: true,
+    effect: 'fade', // A nice fade effect for hero banners
+    autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+    },
+    pagination: {
+        el: '.heroSwiper .swiper-pagination',
+        clickable: true,
+    },
+    navigation: {
+        nextEl: '.heroSwiper .swiper-button-next',
+        prevEl: '.heroSwiper .swiper-button-prev',
+    },
+});
+
+    });
+</script>
+</body>
+</html>

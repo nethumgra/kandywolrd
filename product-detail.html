@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KANDY WORLD - Product Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://unpkg.com/drift-zoom@1.3.1/dist/drift-basic.min.css">
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .font-black { font-weight: 900; } /* Added for consistency */
+        .sidebar-panel { transition: transform 0.3s ease-in-out; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Thumbnail styles */
+        .thumbnail-img {
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s ease-in-out;
+        }
+        .thumbnail-img.active,
+        .thumbnail-img:hover {
+            border-color: #0d9488; /* teal-600 */
+        }
+        
+        /* Disabled button style */
+        button:disabled {
+            background-color: #d1d5db; /* gray-300 */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        button:disabled:hover {
+            background-color: #d1d5db;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-800">
+
+    <div class="bg-black text-white text-center py-2 text-sm">
+        Free Island-wide Delivery on Orders Over Rs. 5000!
+    </div>
+    <nav class="bg-white text-gray-800 px-4 py-4 sticky top-0 z-40 shadow-sm border-b">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <div class="flex items-center">
+                <a href="index.html" class="flex items-center">
+                    <img src="https://i.ibb.co/PyNpHPH/Untitled-design-3.png" alt="Kandy World Logo" class="h-10 mr-3">
+                    <span class="text-2xl font-black tracking-wider text-black">KANDY WORLD</span>
+                </a>
+            </div>
+
+            <div class="hidden lg:flex flex-grow max-w-xl mx-8">
+                <form id="desktop-search-form" class="w-full flex items-center border border-gray-300 rounded-md">
+                    <div class="relative">
+                        <select class="pl-4 pr-8 py-2 bg-gray-100 rounded-l-md border-r border-gray-300 text-sm focus:outline-none appearance-none">
+                            <option>All</option>
+                            <option>T-Shirts</option>
+                            <option>Long Sleeves</option>
+                            <option>Shorts</option>
+                        </select>
+                    </div>
+                    <input type="text" id="desktop-search-input" placeholder="I'm shopping for..." class="w-full py-2 px-4 text-gray-900 placeholder-gray-500 focus:outline-none">
+                    <button type="submit" class="px-6 py-2 bg-black text-white font-semibold rounded-r-md hover:bg-gray-800">Search</button>
+                </form>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="cart.html" id="cart-button" class="flex items-center gap-2 hover:text-teal-600 relative">
+                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.658-.463 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
+                </a>
+                <button id="user-button" class="flex items-center gap-2 hover:text-teal-600">
+                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                    <span id="user-text" class="text-sm hidden md:block">Log in / Register</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <main id="main-content" class="max-w-7xl mx-auto px-4 py-8">
+        <nav id="breadcrumbs" class="text-sm text-gray-600 mb-6">
+            <span class="h-4 w-1/3 bg-gray-200 rounded animate-pulse inline-block"></span>
+        </nav>
+
+        <div id="product-section" class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div id="image-gallery" class="flex flex-col gap-4">
+                <div id="main-image-container" class="aspect-square bg-gray-100 rounded-lg animate-pulse relative">
+                </div>
+                <div id="thumbnail-container" class="grid grid-cols-5 gap-3">
+                </div>
+            </div>
+
+            <div id="product-details" class="lg:sticky top-28 self-start">
+                    <div class="space-y-4 mb-8">
+                        <p id="product-brand" class="text-lg text-gray-500 h-6 w-1/3 bg-gray-200 rounded animate-pulse"></p>
+                        
+                        <div>
+                            <h1 id="product-name" class="text-4xl lg:text-5xl font-bold text-gray-900 h-12 w-full bg-gray-200 rounded animate-pulse"></h1>
+                        </div>
+                        
+                        <p id="product-price" class="text-3xl font-bold text-gray-800 h-10 w-1/2 bg-gray-200 rounded animate-pulse"></p>
+                        <p class="text-md text-gray-600 pt-2">Colour: <span id="product-color" class="font-medium text-gray-800">...</span></p>
+                   </div>
+
+                   <div class="mb-8">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="text-sm font-medium text-gray-800">Size:</label>
+                            <a href="#" class="text-sm font-medium text-gray-600 hover:underline">Size Guide</a>
+                        </div>
+                        <div id="size-selector" class="flex flex-wrap gap-2">
+                            <span class="h-10 w-12 bg-gray-200 rounded animate-pulse"></span>
+                            <span class="h-10 w-12 bg-gray-200 rounded animate-pulse"></span>
+                            <span class="h-10 w-12 bg-gray-200 rounded animate-pulse"></span>
+                        </div>
+                   </div>
+
+                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                        <button id="add-to-cart-btn" class="w-full bg-black text-white font-bold py-3 rounded-md hover:bg-gray-800 transition">Add to Cart</button>
+                        <button id="buy-now-btn" class="w-full border border-gray-800 text-gray-800 font-bold py-3 rounded-md hover:bg-gray-100 transition">Buy Now</button>
+                   </div>
+                   
+                   <div class="border-t border-gray-200">
+                        <div class="border-b border-gray-200 py-4">
+                            <button class="accordion-toggle flex justify-between items-center w-full text-left font-semibold text-gray-800">
+                                <span>Product Information</span>
+                                <svg class="accordion-icon w-5 h-5 transition-transform transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="accordion-content hidden mt-3">
+                                <p id="product-description" class="text-gray-600 text-sm leading-relaxed">Loading description...</p>
+                            </div>
+                        </div>
+                           <div class="border-b border-gray-200 py-4">
+                            <button class="accordion-toggle flex justify-between items-center w-full text-left font-semibold text-gray-800">
+                                <span>Delivery & Returns</span>
+                                <svg class="accordion-icon w-5 h-5 transition-transform transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div class="accordion-content hidden mt-3">
+                                <p class="text-gray-600 text-sm leading-relaxed">Standard delivery is 3-5 working days. We offer a 30-day return policy. Items must be in original condition with tags attached.</p>
+                            </div>
+                        </div>
+                   </div>
+            </div>
+        </div>
+    </main>
+    
+    <section id="related-products-section" class="max-w-7xl mx-auto px-4 py-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-8">Related Products</h2>
+        <div id="related-products-scroller" class="flex space-x-4 overflow-x-auto no-scrollbar pb-4">
+        </div>
+    </section>
+
+    <div id="toast-notification" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-5 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 ease-out">
+        <p>Item added to cart!</p>
+    </div>
+
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+         <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+                <div class="flex border-b">
+                    <button id="login-tab" class="flex-1 py-3 font-semibold text-center bg-gray-100 text-gray-800 rounded-tl-lg">Login</button>
+                    <button id="signup-tab" class="flex-1 py-3 font-semibold text-center bg-white text-gray-500">Sign Up</button>
+                </div>
+                <div class="p-8">
+                    <form id="login-form" class="space-y-4">
+                        <div>
+                            <label for="login-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                            <input type="email" id="login-email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" id="login-password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                        <button type="submit" class="w-full bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">Login</button>
+                    </form>
+                    <form id="signup-form" class="space-y-4 hidden">
+                        <div>
+                            <label for="signup-email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                            <input type="email" id="signup-email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                        </div>
+                        <div>
+                            <label for="signup-password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" id="signup-password" minlength="6" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                            <p class="text-xs text-gray-500 mt-1">Must be at least 6 characters long.</p>
+                        </div>
+                        <button type="submit" class="w-full bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">Create Account</button>
+                    </form>
+                </div>
+          </div>
+    </div>
+    <div id="user-info-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center">
+            <h2 class="text-lg font-medium text-gray-900">Welcome!</h2>
+            <p id="user-email-display" class="mt-2 text-sm text-gray-600 truncate"></p>
+            <a href="my-orders.html" id="my-orders-button" class="mt-4 w-full block bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">My Orders</a>
+            <button id="logout-button" class="mt-2 w-full bg-red-600 text-white font-bold py-2.5 rounded-md hover:bg-red-700 transition">Logout</button>
+            <button id="close-user-modal" class="mt-2 w-full text-gray-600 text-sm py-2">Close</button>
+        </div>
+    </div>
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">KANDY WORLD</h3>
+                    <p class="text-gray-400 text-sm">Discover premium quality t-shirts designed for comfort and style. Your new favorite tee awaits.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Shop</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-white">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">T-Shirts</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Long Sleeves</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Shorts</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Help</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Shipping & Returns</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Size Guide</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Stay Connected</h3>
+                    <p class="text-gray-400 text-sm mb-3">Get exclusive deals and updates straight to your inbox.</p>
+                    <form class="flex"><input type="email" placeholder="Your Email" class="w-full rounded-l-md py-2 px-3 text-gray-800 focus:outline-none"><button type="submit" class="bg-teal-600 hover:bg-teal-700 rounded-r-md px-4 py-2 font-semibold">Go</button></form>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-400">
+                <p>&copy; 2025 KANDY WORLD. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="https://unpkg.com/drift-zoom@1.3.1/dist/Drift.min.js"></script>
+    
+    <script type="module">
+        // The Javascript code remains the same as you provided
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, where, limit, getDocs, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDglDGMO-cknnl7JR7cD89_4yWdLRkvLBY",
+            authDomain: "ssdfashion-af744.firebaseapp.com",
+            projectId: "ssdfashion-af744",
+            storageBucket: "ssdfashion-af744.appspot.com",
+            messagingSenderId: "233163735482",
+            appId: "1:233163735482:web:14ecbc0b46a28fb02e9d83"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentProductData = null;
+        let driftInstance = null;
+        
+        const starFilledIcon = `<svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>`;
+
+        function generateStars(rating = 0) {
+            let starsHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                starsHTML += starFilledIcon;
+            }
+            return starsHTML;
+        }
+
+        function createProductCardElement(productId, product) {
+            const cardWrapper = document.createElement('div');
+            cardWrapper.className = 'group relative flex-shrink-0 w-2/5 md:w-1/4 lg:w-1/5 snap-start';
+            const displayImage = (product.imageUrls && product.imageUrls[0]) || product.imageUrl || 'https://placehold.co/400x500/f0f0f0/666?text=No+Image';
+            const rating = product.rating || (Math.random() * 2 + 3).toFixed(1);
+
+            cardWrapper.innerHTML = `
+                <div class="relative overflow-hidden rounded-lg bg-white border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                    <a href="product-detail.html?id=${productId}">
+                        <img src="${displayImage}" alt="${product.name}" class="w-full h-auto aspect-[3/4] object-cover object-center group-hover:scale-105 transition-transform duration-300">
+                    </a>
+                </div>
+                <div class="mt-3 px-1">
+                    <a href="product-detail.html?id=${productId}" class="text-sm text-blue-700 hover:text-blue-900 transition-colors">${product.name}</a>
+                    <div class="flex items-center mt-1">${generateStars(rating)}</div>
+                    <div class="mt-2"><p class="text-md font-bold text-gray-900">Rs. ${product.price.toLocaleString()}</p></div>
+                </div>`;
+            return cardWrapper;
+        }
+
+        async function loadRelatedProducts(currentProduct) {
+            const scroller = document.getElementById('related-products-scroller');
+            if (!currentProduct || !currentProduct.category) {
+                document.getElementById('related-products-section').style.display = 'none';
+                return;
+            }
+
+            try {
+                const q = query(
+                    collection(db, "products"),
+                    where("category", "==", currentProduct.category),
+                    where("__name__", "!=", currentProduct.id),
+                    limit(8)
+                );
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    document.getElementById('related-products-section').style.display = 'none';
+                    return;
+                }
+
+                querySnapshot.forEach(doc => {
+                    const product = { id: doc.id, ...doc.data() };
+                    const card = createProductCardElement(doc.id, product);
+                    scroller.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error("Error loading related products: ", error);
+                document.getElementById('related-products-section').style.display = 'none';
+            }
+        }
+
+        function setupImageGalleryAndZoom(product) {
+            const mainImageContainer = document.getElementById('main-image-container');
+            const thumbnailContainer = document.getElementById('thumbnail-container');
+            mainImageContainer.innerHTML = '';
+            thumbnailContainer.innerHTML = '';
+            mainImageContainer.classList.remove('animate-pulse');
+
+            const images = product.imageUrls || (product.imageUrl ? [product.imageUrl] : []);
+
+            if (images.length === 0) {
+                mainImageContainer.innerHTML = '<p class="text-center p-4">No image available</p>';
+                return;
+            }
+
+            const mainImage = document.createElement('img');
+            mainImage.id = 'main-product-image';
+            mainImage.className = 'w-full h-full object-cover rounded-lg cursor-pointer';
+            mainImage.src = images[0];
+            mainImage.setAttribute('data-zoom', images[0]);
+            mainImageContainer.appendChild(mainImage);
+            
+            if (driftInstance) driftInstance.destroy();
+            driftInstance = new Drift(mainImage, {
+                paneContainer: mainImageContainer,
+                inlinePane: true,
+                containInline: false,
+                hoverBoundingBox: true
+            });
+
+            if (images.length > 1) {
+                thumbnailContainer.classList.remove('hidden');
+                images.forEach((url, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = url;
+                    thumb.className = 'thumbnail-img w-full aspect-square object-cover rounded-md';
+                    if (index === 0) thumb.classList.add('active');
+                    
+                    thumb.addEventListener('click', () => {
+                        mainImage.src = url;
+                        mainImage.setAttribute('data-zoom', url);
+                        thumbnailContainer.querySelectorAll('.thumbnail-img').forEach(t => t.classList.remove('active'));
+                        thumb.classList.add('active');
+                    });
+                    thumbnailContainer.appendChild(thumb);
+                });
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            toast.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function updateUI(product) {
+            currentProductData = product;
+            
+            document.querySelectorAll('.animate-pulse').forEach(el => {
+                el.classList.remove('animate-pulse', 'bg-gray-200');
+                el.style.height = '';
+                el.style.width = '';
+            });
+
+            document.title = `${product.name} - KANDY WORLD`;
+            
+            const breadcrumbs = document.getElementById('breadcrumbs');
+            breadcrumbs.innerHTML = `
+                <a href="index.html" class="hover:underline">Home</a>
+                <span class="mx-2">/</span>
+                <a href="index.html" class="hover:underline">${product.category || 'All'}</a>
+                <span class="mx-2">/</span>
+                <span class="text-gray-900 font-medium">${product.name}</span>
+            `;
+
+            document.getElementById('product-brand').textContent = product.brand || 'Kandy World';
+            document.getElementById('product-name').textContent = product.name;
+            document.getElementById('product-price').textContent = `Rs. ${product.price.toLocaleString()}`;
+            document.getElementById('product-color').textContent = product.color;
+            document.getElementById('product-description').textContent = product.description || 'No description available.';
+
+            const sizeSelector = document.getElementById('size-selector');
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            const buyNowBtn = document.getElementById('buy-now-btn');
+            sizeSelector.innerHTML = '';
+            
+            let isAnyInStock = false;
+            if (product.sizes && product.sizes.length > 0) {
+                product.sizes.forEach(sizeInfo => {
+                    const button = document.createElement('button');
+                    button.dataset.size = sizeInfo.size;
+                    
+                    if (sizeInfo.stock === 'Sold Out') {
+                        button.disabled = true;
+                        button.className = 'size-btn px-4 py-2 border border-gray-200 rounded-md text-sm text-gray-400 bg-gray-100 relative overflow-hidden cursor-not-allowed';
+                        button.innerHTML = `${sizeInfo.size}<span class="absolute top-1/2 left-0 w-full h-px bg-gray-400 transform -rotate-12"></span>`;
+                    } else {
+                        isAnyInStock = true;
+                        button.className = 'size-btn px-4 py-2 border border-gray-300 rounded-md text-sm hover:border-black transition-colors';
+                        button.textContent = sizeInfo.size;
+                    }
+                    sizeSelector.appendChild(button);
+                });
+                setupSizeSelector();
+            } else {
+                isAnyInStock = true;
+                sizeSelector.innerHTML = '<p class="text-sm text-gray-500">One size available.</p>';
+            }
+            
+            if (!isAnyInStock) {
+                addToCartBtn.disabled = true;
+                buyNowBtn.disabled = true;
+                addToCartBtn.textContent = 'Sold Out';
+                buyNowBtn.textContent = 'Sold Out';
+                buyNowBtn.classList.add('bg-gray-300', 'border-gray-300', 'text-gray-500');
+            }
+            
+            setupImageGalleryAndZoom(product);
+            loadRelatedProducts(product);
+        }
+
+        async function initializePage() {
+            const mainContent = document.getElementById('main-content');
+            const productId = new URLSearchParams(window.location.search).get('id');
+
+            if (!productId) {
+                mainContent.innerHTML = '<h1 class="text-center text-2xl font-bold text-red-600 mt-10">Error: No Product ID provided.</h1>';
+                return;
+            }
+            try {
+                const docSnap = await getDoc(doc(db, "products", productId));
+                if (docSnap.exists()) {
+                    updateUI({ id: docSnap.id, ...docSnap.data() });
+                } else {
+                    mainContent.innerHTML = '<h1 class="text-center text-2xl font-bold text-red-600 mt-10">Product not found!</h1>';
+                }
+            } catch (error) {
+                console.error("Error fetching product details:", error);
+                mainContent.innerHTML = `<h1 class="text-center text-2xl font-bold text-red-600 mt-10">Failed to load product details.</h1>`;
+            }
+        }
+        
+        async function setupAddToCartButton() {
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+            addToCartBtn.addEventListener('click', async () => {
+                const user = auth.currentUser;
+                if (!user) {
+                    document.getElementById('auth-modal').classList.remove('hidden');
+                    return;
+                }
+                if (!currentProductData) {
+                    showToast("Product data is not loaded yet.");
+                    return;
+                }
+                
+                const hasSizes = currentProductData.sizes && currentProductData.sizes.length > 0;
+                const selectedSizeEl = document.querySelector('.size-btn.bg-black');
+                
+                if (hasSizes && !selectedSizeEl) {
+                    showToast("Please select a size first!");
+                    return;
+                }
+
+                const selectedSize = selectedSizeEl ? selectedSizeEl.dataset.size : 'One Size';
+                
+                addToCartBtn.textContent = 'Adding...';
+                addToCartBtn.disabled = true;
+
+                const imageUrl = (currentProductData.imageUrls && currentProductData.imageUrls[0]) || currentProductData.imageUrl || '';
+                const cartItemRef = doc(db, 'carts', user.uid, 'items', `${currentProductData.id}_${selectedSize}`);
+
+                try {
+                    await runTransaction(db, async (transaction) => {
+                        const cartItemSnap = await transaction.get(cartItemRef);
+                        const currentQuantity = cartItemSnap.exists() ? cartItemSnap.data().quantity : 0;
+
+                        transaction.set(cartItemRef, {
+                            productId: currentProductData.id,
+                            name: currentProductData.name,
+                            brand: currentProductData.brand || 'N/A', // <-- FIXED HERE
+                            price: currentProductData.price,
+                            size: selectedSize,
+                            quantity: currentQuantity + 1,
+                            imageUrl: imageUrl,
+                            addedAt: new Date()
+                        }, { merge: true });
+                    });
+                    showToast('Item added to cart!');
+                } catch (error) {
+                    console.error("Error adding to cart: ", error);
+                    showToast('Failed to add item. Please try again.');
+                } finally {
+                    addToCartBtn.textContent = 'Add to Cart';
+                    if (addToCartBtn.textContent !== 'Sold Out') {
+                       addToCartBtn.disabled = false;
+                    }
+                }
+            });
+        }
+
+        function setupBuyNowButton() {
+            const buyNowBtn = document.getElementById('buy-now-btn');
+            buyNowBtn.addEventListener('click', () => {
+                if (!currentProductData) {
+                    showToast("Product data is not loaded yet.");
+                    return;
+                }
+                const hasSizes = currentProductData.sizes && currentProductData.sizes.length > 0;
+                const selectedSizeEl = document.querySelector('.size-btn.bg-black');
+
+                if (hasSizes && !selectedSizeEl) {
+                    showToast("Please select a size first!");
+                    return;
+                }
+                const selectedSize = selectedSizeEl ? selectedSizeEl.dataset.size : 'One Size';
+                
+                const imageUrl = (currentProductData.imageUrls && currentProductData.imageUrls[0]) || currentProductData.imageUrl || '';
+
+                const checkoutItem = {
+                    id: currentProductData.id, name: currentProductData.name,
+                    price: currentProductData.price, size: selectedSize,
+                    quantity: 1, imageUrl: imageUrl
+                };
+
+                sessionStorage.setItem('checkoutItem', JSON.stringify(checkoutItem));
+                window.location.href = 'checkout.html';
+            });
+        }
+        
+        function setupSizeSelector() {
+            const sizeButtons = document.querySelectorAll('.size-btn:not(:disabled)');
+            sizeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    sizeButtons.forEach(btn => btn.classList.remove('bg-black', 'text-white'));
+                    button.classList.add('bg-black', 'text-white');
+                });
+            });
+        }
+        
+        function setupAccordion() {
+            document.querySelectorAll('.accordion-toggle').forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const content = toggle.nextElementSibling;
+                    const icon = toggle.querySelector('.accordion-icon');
+                    content.classList.toggle('hidden');
+                    icon.classList.toggle('rotate-180');
+                });
+            });
+        }
+        
+        function setupAuthModal() {
+            const authModal = document.getElementById('auth-modal');
+            const userInfoModal = document.getElementById('user-info-modal');
+            const userButton = document.getElementById('user-button');
+            const closeUserModal = document.getElementById('close-user-modal');
+
+            const loginTab = authModal.querySelector('#login-tab');
+            const signupTab = authModal.querySelector('#signup-tab');
+            const loginForm = authModal.querySelector('#login-form');
+            const signupForm = authModal.querySelector('#signup-form');
+            const logoutButton = userInfoModal.querySelector('#logout-button');
+            
+            userButton.addEventListener('click', () => {
+                if (auth.currentUser) {
+                    document.getElementById('user-email-display').textContent = auth.currentUser.email;
+                    userInfoModal.classList.remove('hidden');
+                } else {
+                    authModal.classList.remove('hidden');
+                }
+            });
+            authModal.addEventListener('click', e => { if (e.target === authModal) authModal.classList.add('hidden'); });
+            userInfoModal.addEventListener('click', e => { if (e.target === userInfoModal) userInfoModal.classList.add('hidden'); });
+            closeUserModal.addEventListener('click', () => userInfoModal.classList.add('hidden'));
+
+            loginTab.addEventListener('click', () => {
+                loginTab.classList.replace('bg-white', 'bg-gray-100');
+                signupTab.classList.replace('bg-gray-100', 'bg-white');
+                loginForm.classList.remove('hidden'); signupForm.classList.add('hidden');
+            });
+            signupTab.addEventListener('click', () => {
+                signupTab.classList.replace('bg-white', 'bg-gray-100');
+                loginTab.classList.replace('bg-gray-100', 'bg-white');
+                signupForm.classList.remove('hidden'); loginForm.classList.add('hidden');
+            });
+
+            loginForm.addEventListener('submit', async e => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value); authModal.classList.add('hidden'); } catch (error) { alert(error.message); } });
+            signupForm.addEventListener('submit', async e => { e.preventDefault(); try { await createUserWithEmailAndPassword(auth, signupForm['signup-email'].value, signupForm['signup-password'].value); authModal.classList.add('hidden'); } catch (error) { alert(error.message); } });
+            logoutButton.addEventListener('click', async () => { await signOut(auth); userInfoModal.classList.add('hidden'); });
+        }
+        
+        onAuthStateChanged(auth, user => {
+            const cartCountEl = document.getElementById('cart-count');
+            if (user) {
+                document.getElementById('user-text').textContent = "My Account";
+                onSnapshot(collection(db, 'carts', user.uid, 'items'), snapshot => {
+                    cartCountEl.textContent = snapshot.size;
+                    cartCountEl.classList.toggle('hidden', snapshot.size === 0);
+                });
+            } else {
+                document.getElementById('user-text').textContent = "Log in / Register";
+                cartCountEl.classList.add('hidden');
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initializePage();
+            setupAccordion();
+            if (document.getElementById('add-to-cart-btn')) {
+                setupAddToCartButton();
+            }
+            if (document.getElementById('buy-now-btn')) {
+                setupBuyNowButton();
+            }
+            setupAuthModal();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - KANDY WORLD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Font eka black wenas kara, oyage index eke wage */
+        body { font-family: 'Poppins', sans-serif; background-color: #f9fafb; }
+        .font-black { font-weight: 900; }
+        .checkmark-container { width: 100px; height: 100px; }
+        .checkmark__circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 3; stroke-miterlimit: 10; stroke: #0d9488; fill: none; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+        .checkmark { width: 100px; height: 100px; border-radius: 50%; display: block; stroke-width: 3; stroke: #fff; stroke-miterlimit: 10; margin: 0 auto; box-shadow: inset 0px 0px 0px #0d9488; animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both; }
+        .checkmark__check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards; }
+        @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+        @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+        @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 50px #0d9488; } }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <header id="page-header">
+        <div class="bg-black text-white text-center py-2 text-sm font-medium">Free Island-wide Delivery on Orders Over Rs. 5000!</div>
+        <nav class="bg-white text-gray-800 px-4 py-4 shadow-sm border-b">
+              <div class="max-w-7xl mx-auto flex items-center justify-between">
+                      <a href="index.html" class="flex items-center">
+                        <img src="https://i.ibb.co/PyNpHPH/Untitled-design-3.png" alt="Kandy World Logo" class="h-10 mr-3">
+                        <span class="text-2xl font-black tracking-wider text-black">KANDY WORLD</span>
+                    </a>
+                          <div class="flex items-center space-x-6">
+                                <a href="cart.html" id="cart-button" class="flex items-center gap-2 hover:text-teal-600 relative">
+                                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.658-.463 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                                    <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white">0</span>
+                                </a>
+                                <button id="user-button" class="flex items-center gap-2 hover:text-teal-600">
+                                    <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                                    <span id="user-text" class="text-sm hidden md:block">Log in / Register</span>
+                                </button>
+                          </div>
+              </div>
+        </nav>
+    </header>
+
+    <main id="main-content" class="max-w-7xl mx-auto px-4 py-8">
+        <div class="text-sm text-gray-600 mb-4">
+            <a href="index.html" class="hover:text-teal-600">Home</a> / <span>Checkout</span>
+        </div>
+        
+        <div id="login-banner" class="bg-gray-200 border border-gray-300 p-4 rounded-md text-sm text-gray-700 mb-8">
+            Have an account? <a href="#" id="login-link" class="text-teal-600 font-semibold hover:underline">Log in</a> for faster checkouts. Or continue as a Guest.
+        </div>
+
+        <div id="checkout-container" class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-5">Shipping & Billing Details</h2>
+                <form id="shipping-form" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="first-name" required class="block w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="last-name" required class="block w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 sm:text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address <span class="text-red-500">*</span></label>
+                        <input type="text" id="address" placeholder="House number and street name" required class="block w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 sm:text-sm">
+                    </div>
+                     <div>
+                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1">Town / City <span class="text-red-500">*</span></label>
+                        <input type="text" id="city" required class="block w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 sm:text-sm">
+                    </div>
+                     <div>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone <span class="text-red-500">*</span></label>
+                        <input type="tel" id="phone" required class="block w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="order-notes" class="block text-sm font-medium text-gray-700 mb-1">Order notes (optional)</label>
+                        <textarea id="order-notes" rows="3" placeholder="Notes about your order, e.g. special notes for delivery." class="block w-full rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 text-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500 sm:text-sm"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="space-y-6">
+                <div id="product-image-container">
+                    <img id="product-image-summary" src="" alt="Product Image" class="w-full rounded-lg shadow-md border hidden">
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md border">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Your Order</h2>
+                    <div class="border-y border-gray-200 divide-y divide-gray-200">
+                        <div class="flex justify-between font-bold text-gray-700 py-3"><span>Product</span><span>Subtotal</span></div>
+                        <div id="order-item-container" class="py-3"><p id="loading-item">Loading item...</p></div>
+                        <div class="flex justify-between font-semibold py-3"><span>Subtotal</span><span id="subtotal-price">Rs. 0</span></div>
+                        <div class="flex justify-between font-semibold py-3 text-gray-600"><span>Shipping</span><span id="shipping-fee">Rs. 0</span></div>
+                        <div class="flex justify-between font-bold text-xl py-3 text-gray-900"><span>Total</span><span id="total-price">Rs. 0</span></div>
+                    </div>
+                    <div id="payment-section" class="mt-6">
+                        <div class="space-y-4">
+                            <div class="flex items-start p-4 border-2 border-teal-500 rounded-md bg-teal-50">
+                                <input id="payment-cod" name="payment-method" type="radio" class="h-4 w-4 text-teal-600 border-gray-300 focus:ring-teal-500 mt-1" checked>
+                                <label for="payment-cod" class="ml-3 block text-sm font-medium text-gray-700"><span class="font-bold">Cash on Delivery</span><p class="text-xs text-gray-500 mt-1">Pay with cash upon delivery.</p></label>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-6">Your personal data will be used to process your order, as described in our <a href="#" class="text-teal-600">Privacy Policy</a>.</p>
+                        <button id="place-order-btn" class="w-full bg-black text-white font-bold py-3.5 rounded-md hover:bg-gray-800 transition mt-6">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer id="page-footer" class="bg-gray-800 text-white mt-12">
+        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div><h3 class="text-lg font-bold mb-4">KANDY WORLD</h3><p class="text-gray-400 text-sm">Discover premium quality t-shirts designed for comfort and style. Your new favorite tee awaits.</p></div>
+                <div><h3 class="text-lg font-semibold mb-4">Shop</h3><ul class="space-y-2 text-sm"><li><a href="#" class="text-gray-400 hover:text-white">New Arrivals</a></li><li><a href="#" class="text-gray-400 hover:text-white">T-Shirts</a></li><li><a href="#" class="text-gray-400 hover:text-white">Long Sleeves</a></li><li><a href="#" class="text-gray-400 hover:text-white">Shorts</a></li></ul></div>
+                <div><h3 class="text-lg font-semibold mb-4">Help</h3><ul class="space-y-2 text-sm"><li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li><li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li><li><a href="#" class="text-gray-400 hover:text-white">Shipping & Returns</a></li><li><a href="#" class="text-gray-400 hover:text-white">Size Guide</a></li></ul></div>
+                <div><h3 class="text-lg font-semibold mb-4">Stay Connected</h3><p class="text-gray-400 text-sm mb-3">Get exclusive deals and updates straight to your inbox.</p><form class="flex"><input type="email" placeholder="Your Email" class="w-full rounded-l-md py-2 px-3 text-gray-800 focus:outline-none"><button type="submit" class="bg-teal-600 hover:bg-teal-700 rounded-r-md px-4 py-2 font-semibold">Go</button></form></div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-400"><p>&copy; 2025 KANDY WORLD. All Rights Reserved.</p></div>
+        </div>
+    </footer>
+
+    <div id="success-overlay" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center hidden">
+        <div class="checkmark-container"><svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/></svg></div>
+        <h2 class="text-2xl font-bold text-gray-800 mt-6">Your order is placed!</h2>
+        <p class="text-gray-600 mt-2">Redirecting to homepage...</p>
+    </div>
+
+    <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md"><div class="flex border-b"><button id="login-tab" class="flex-1 py-3 font-semibold text-center bg-gray-100 text-gray-800 rounded-tl-lg">Login</button><button id="signup-tab" class="flex-1 py-3 font-semibold text-center bg-white text-gray-500">Sign Up</button></div><div class="p-8"><form id="login-form" class="space-y-4"><div><label for="login-email" class="block text-sm font-medium text-gray-700">Email Address</label><input type="email" id="login-email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500"></div><div><label for="login-password" class="block text-sm font-medium text-gray-700">Password</label><input type="password" id="login-password" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500"></div><button type="submit" class="w-full bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">Login</button></form><form id="signup-form" class="space-y-4 hidden"><div><label for="signup-email" class="block text-sm font-medium text-gray-700">Email Address</label><input type="email" id="signup-email" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500"></div><div><label for="signup-password" class="block text-sm font-medium text-gray-700">Password</label><input type="password" id="signup-password" minlength="6" required class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500"><p class="text-xs text-gray-500 mt-1">Must be at least 6 characters long.</p></div><button type="submit" class="w-full bg-teal-600 text-white font-bold py-2.5 rounded-md hover:bg-teal-700 transition">Create Account</button></form></div></div>
+   </div>
+   <div id="user-info-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+       <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-6 text-center"><h2 class="text-lg font-medium text-gray-900">Welcome!</h2><p id="user-email-display" class="mt-2 text-sm text-gray-600 truncate"></p><button id="logout-button" class="mt-4 w-full bg-red-600 text-white font-bold py-2.5 rounded-md hover:bg-red-700 transition">Logout</button><button id="close-user-modal" class="mt-2 w-full text-gray-600 text-sm py-2">Close</button></div>
+   </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyDglDGMO-cknnl7JR7cD89_4yWdLRkvLBY",
+            authDomain: "ssdfashion-af744.firebaseapp.com",
+            projectId: "ssdfashion-af744",
+            storageBucket: "ssdfashion-af744.appspot.com",
+            messagingSenderId: "233163735482",
+            appId: "1:233163735482:web:14ecbc0b46a28fb02e9d83"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkoutContainer = document.getElementById('checkout-container');
+            const itemContainer = document.getElementById('order-item-container');
+            const productImageSummary = document.getElementById('product-image-summary');
+            const subtotalEl = document.getElementById('subtotal-price');
+            const shippingFeeEl = document.getElementById('shipping-fee');
+            const totalEl = document.getElementById('total-price');
+            const placeOrderBtn = document.getElementById('place-order-btn');
+
+            const DELIVERY_FEE = 350;
+            const itemDataString = sessionStorage.getItem('checkoutItem');
+
+            function prefillForm(address) {
+                if(address.firstName) document.getElementById('first-name').value = address.firstName;
+                if(address.lastName) document.getElementById('last-name').value = address.lastName;
+                if(address.address) document.getElementById('address').value = address.address;
+                if(address.city) document.getElementById('city').value = address.city;
+                if(address.phone) document.getElementById('phone').value = address.phone;
+            }
+
+            if (!itemDataString) {
+                checkoutContainer.innerHTML = `<div class="lg:col-span-2 text-center py-12 bg-white rounded-lg shadow-sm border"><h2 class="text-2xl font-bold text-gray-800">No item selected!</h2><p class="text-gray-600 mt-2">Please select an item to buy now.</p><a href="index.html" class="inline-block bg-teal-600 text-white font-bold py-2 px-6 rounded-md hover:bg-teal-700 transition mt-6">Go to Shopping</a></div>`;
+                return;
+            }
+
+            const item = JSON.parse(itemDataString);
+
+            productImageSummary.src = item.imageUrl || 'https://placehold.co/400x300/e2e8f0/64748b?text=Product+Image';
+            productImageSummary.alt = item.name || 'Product Image';
+            productImageSummary.classList.remove('hidden');
+
+            // ✅ Order summary eke item name eka dig wunath kapenne nathi wenna haduwa
+            itemContainer.innerHTML = `<div class="flex justify-between items-start text-sm gap-4">
+                                            <span class="flex-1 text-gray-800 font-medium pr-2">${item.name} - ${item.size} &times; ${item.quantity}</span>
+                                            <span class="font-medium text-gray-800 text-right">Rs. ${(item.price * item.quantity).toLocaleString()}</span>
+                                       </div>`;
+                                       
+            const subtotal = item.price * item.quantity;
+            const totalPrice = subtotal + DELIVERY_FEE;
+            subtotalEl.textContent = `Rs. ${subtotal.toLocaleString()}`;
+            shippingFeeEl.textContent = `Rs. ${DELIVERY_FEE.toLocaleString()}`;
+            totalEl.textContent = `Rs. ${totalPrice.toLocaleString()}`;
+
+            placeOrderBtn.addEventListener('click', async () => {
+                const form = document.getElementById('shipping-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+                
+                placeOrderBtn.disabled = true;
+                placeOrderBtn.textContent = 'Placing Order...';
+
+                const shippingAddress = {
+                    firstName: document.getElementById('first-name').value,
+                    lastName: document.getElementById('last-name').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    phone: document.getElementById('phone').value,
+                    notes: document.getElementById('order-notes').value || ""
+                };
+                
+                const currentUser = auth.currentUser;
+
+                const orderData = {
+                    customer: shippingAddress,
+                    item: item,
+                    payment: { 
+                        method: 'Cash on Delivery', 
+                        subtotal: subtotal, 
+                        deliveryFee: DELIVERY_FEE, 
+                        total: totalPrice 
+                    },
+                    status: "New",
+                    timestamp: serverTimestamp(),
+                    userId: currentUser ? currentUser.uid : 'guest' 
+                };
+
+                if (currentUser) {
+                    try {
+                        const userDocRef = doc(db, "users", currentUser.uid);
+                        await setDoc(userDocRef, { shippingAddress }, { merge: true });
+                    } catch (error) {
+                        console.error("Could not save user address:", error);
+                    }
+                }
+                
+                try {
+                    await addDoc(collection(db, "orders"), orderData);
+                    document.getElementById('main-content').style.display = 'none';
+                    document.getElementById('page-footer').style.display = 'none';
+                    document.getElementById('page-header').style.display = 'none';
+                    document.getElementById('success-overlay').classList.remove('hidden');
+                    sessionStorage.removeItem('checkoutItem');
+                    setTimeout(() => { window.location.href = 'index.html'; }, 3000);
+                } catch (error) {
+                    console.error("Error placing order: ", error);
+                    alert("There was an error placing your order. Please try again.");
+                    placeOrderBtn.disabled = false;
+                    placeOrderBtn.textContent = 'Place Order';
+                }
+            });
+
+            onAuthStateChanged(auth, async (user) => {
+                const cartCountEl = document.getElementById('cart-count');
+                const userTextEl = document.getElementById('user-text');
+                
+                if (user) {
+                    if (userTextEl) userTextEl.textContent = "My Account";
+                    loginBanner.innerHTML = `You are checking out as <span class="font-semibold">${user.email}</span>.`;
+                    loginBanner.classList.replace('bg-gray-200', 'bg-teal-100');
+                    loginBanner.classList.replace('border-gray-300', 'border-teal-300');
+
+                    const userDocRef = doc(db, "users", user.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+                    if (userDocSnap.exists() && userDocSnap.data().shippingAddress) {
+                        prefillForm(userDocSnap.data().shippingAddress);
+                    }
+                    
+                    onSnapshot(collection(db, 'carts', user.uid, 'items'), snapshot => {
+                        if(cartCountEl) {
+                           cartCountEl.textContent = snapshot.size;
+                           cartCountEl.classList.toggle('hidden', snapshot.size === 0);
+                        }
+                    });
+                } else {
+                    if (userTextEl) userTextEl.textContent = "Log in / Register";
+                    if (cartCountEl) cartCountEl.classList.add('hidden');
+                    loginBanner.style.display = 'block';
+                }
+            });
+
+             setupAuthModal();
+        });
+
+        function setupAuthModal() {
+            const authModal = document.getElementById('auth-modal');
+            const userInfoModal = document.getElementById('user-info-modal');
+            const userButton = document.getElementById('user-button');
+            const loginLink = document.getElementById('login-link');
+            if (loginLink) {
+                loginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    authModal.classList.remove('hidden');
+                });
+            }
+
+            if (!authModal) return;
+            
+            const closeUserModal = document.getElementById('close-user-modal');
+            const loginTab = authModal.querySelector('#login-tab');
+            const signupTab = authModal.querySelector('#signup-tab');
+            const loginForm = authModal.querySelector('#login-form');
+            const signupForm = authModal.querySelector('#signup-form');
+            const logoutButton = userInfoModal.querySelector('#logout-button');
+            
+            userButton.addEventListener('click', () => {
+                if (auth.currentUser) {
+                    document.getElementById('user-email-display').textContent = auth.currentUser.email;
+                    userInfoModal.classList.remove('hidden');
+                } else {
+                    authModal.classList.remove('hidden');
+                }
+            });
+            authModal.addEventListener('click', e => { if (e.target === authModal) authModal.classList.add('hidden'); });
+            userInfoModal.addEventListener('click', e => { if (e.target === userInfoModal) userInfoModal.classList.add('hidden'); });
+            closeUserModal.addEventListener('click', () => userInfoModal.classList.add('hidden'));
+            loginTab.addEventListener('click', () => {
+                loginTab.classList.replace('bg-white', 'bg-gray-100'); signupTab.classList.replace('bg-gray-100', 'bg-white');
+                loginForm.classList.remove('hidden'); signupForm.classList.add('hidden');
+            });
+            signupTab.addEventListener('click', () => {
+                signupTab.classList.replace('bg-white', 'bg-gray-100'); loginTab.classList.replace('bg-gray-100', 'bg-white');
+                signupForm.classList.remove('hidden'); loginForm.classList.add('hidden');
+            });
+            loginForm.addEventListener('submit', async e => { e.preventDefault(); try { await signInWithEmailAndPassword(auth, loginForm['login-email'].value, loginForm['login-password'].value); authModal.classList.add('hidden'); } catch (error) { alert(error.message); } });
+            signupForm.addEventListener('submit', async e => { e.preventDefault(); try { await createUserWithEmailAndPassword(auth, signupForm['signup-email'].value, signupForm['signup-password'].value); authModal.classList.add('hidden'); } catch (error) { alert(error.message); } });
+            logoutButton.addEventListener('click', async () => { await signOut(auth); userInfoModal.classList.add('hidden'); });
+        }
+    </script>
+</body>
+</html>

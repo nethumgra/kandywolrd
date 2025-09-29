@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - KANDY WORLD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .font-black { font-weight: 900; }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+    <header id="page-header">
+        <div class="bg-black text-white text-center py-2 text-sm font-medium">Free Island-wide Delivery on Orders Over Rs. 5000!</div>
+        <nav class="bg-white text-gray-800 px-4 py-4 shadow-sm border-b">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                
+                <a href="index.html" class="flex items-center">
+                    <img src="https://i.ibb.co/PyNpHPH/Untitled-design-3.png" alt="Kandy World Logo" class="h-10 mr-3">
+                    <span class="text-2xl font-black tracking-wider text-black">KANDY WORLD</span>
+                </a>
+
+                <div class="flex items-center space-x-6">
+                    <a href="cart.html" id="cart-button" class="flex items-center gap-2 hover:text-teal-600 relative">
+                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.658-.463 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-white hidden">0</span>
+                    </a>
+                    <button id="user-button" class="flex items-center gap-2 hover:text-teal-600">
+                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+                        <span id="user-text" class="text-sm hidden md:block">Log in / Register</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-10 w-full flex-grow">
+        <h1 class="text-3xl font-bold text-gray-800 mb-8">My Orders</h1>
+        <div id="orders-container" class="space-y-6">
+            </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">KANDY WORLD</h3>
+                    <p class="text-gray-400 text-sm">Discover premium quality t-shirts designed for comfort and style. Your new favorite tee awaits.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Shop</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="index.html" class="text-gray-400 hover:text-white">New Arrivals</a></li>
+                        <li><a href="index.html" class="text-gray-400 hover:text-white">T-Shirts</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Help</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Stay Connected</h3>
+                    <p class="text-gray-400 text-sm mb-3">Get exclusive deals and updates straight to your inbox.</p>
+                    <form class="flex"><input type="email" placeholder="Your Email" class="w-full rounded-l-md py-2 px-3 text-gray-800 focus:outline-none"><button type="submit" class="bg-teal-600 hover:bg-teal-700 rounded-r-md px-4 py-2 font-semibold">Go</button></form>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center text-sm text-gray-400">
+                <p>&copy; 2025 KANDY WORLD. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <div id="address-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h2 class="text-xl font-bold mb-4">Update Shipping Address</h2>
+            <form id="address-form" class="space-y-4">
+                <input type="hidden" id="modal-order-id">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                        <input type="text" id="first-name" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                    </div>
+                    <div>
+                        <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                        <input type="text" id="last-name" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                    </div>
+                </div>
+                <div>
+                    <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                    <input type="text" id="address" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label for="city" class="block text-sm font-medium text-gray-700 mb-1">Town / City</label>
+                    <input type="text" id="city" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                </div>
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input type="tel" id="phone" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                </div>
+                <div class="flex justify-end gap-3 pt-4">
+                    <button type="button" id="cancel-update-btn" class="px-4 py-2 bg-gray-200 rounded-md text-sm font-medium hover:bg-gray-300">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-black text-white rounded-md text-sm font-medium hover:bg-gray-800">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="toast-notification" class="fixed bottom-5 right-5 bg-gray-800 text-white py-2 px-5 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 ease-out">
+        <p></p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, onSnapshot, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDglDGMO-cknnl7JR7cD89_4yWdLRkvLBY",
+            authDomain: "ssdfashion-af744.firebaseapp.com",
+            projectId: "ssdfashion-af744",
+            storageBucket: "ssdfashion-af744.appspot.com",
+            messagingSenderId: "233163735482",
+            appId: "1:233163735482:web:14ecbc0b46a28fb02e9d83"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // --- UI Elements ---
+        const ordersContainer = document.getElementById('orders-container');
+        const addressModal = document.getElementById('address-modal');
+        const addressForm = document.getElementById('address-form');
+        const cancelUpdateBtn = document.getElementById('cancel-update-btn');
+        let currentOrders = [];
+
+        // --- Toast Notification ---
+        function showToast(message) {
+            const toast = document.getElementById('toast-notification');
+            toast.querySelector('p').textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // --- Status Badge Generator ---
+        function getStatusBadge(status) {
+            status = status || 'Pending'; // Default to Pending if status is missing
+            let statusText = status;
+            let bgColor = 'bg-gray-100';
+            let textColor = 'text-gray-800';
+
+            switch (status.toLowerCase()) {
+                case 'new':
+                    statusText = 'Pending';
+                    bgColor = 'bg-yellow-100';
+                    textColor = 'text-yellow-800';
+                    break;
+                case 'pending':
+                    bgColor = 'bg-yellow-100';
+                    textColor = 'text-yellow-800';
+                    break;
+                case 'confirmed':
+                    bgColor = 'bg-green-100';
+                    textColor = 'text-green-800';
+                    break;
+                case 'rejected':
+                    bgColor = 'bg-red-100';
+                    textColor = 'text-red-800';
+                    break;
+            }
+            return `<span class="px-3 py-1 text-xs font-medium rounded-full ${bgColor} ${textColor}">${statusText}</span>`;
+        }
+
+        // --- Order Card HTML Generator ---
+        function createOrderCardHTML(order) {
+            const orderData = order.data();
+            const orderId = order.id;
+            const item = orderData.item;
+            const customer = orderData.customer;
+            const payment = orderData.payment;
+            const timestamp = orderData.timestamp.toDate();
+            const formattedDate = timestamp.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            const isUpdatable = orderData.status.toLowerCase() === 'new' || orderData.status.toLowerCase() === 'pending';
+            
+            const updateButtonHTML = isUpdatable 
+                ? `<button data-order-id="${orderId}" class="update-address-btn text-sm font-medium text-teal-600 hover:underline">Update Address</button>`
+                : `<p class="text-sm text-gray-500">Address cannot be updated now.</p>`;
+
+            return `
+                <div class="bg-white border rounded-lg shadow-sm overflow-hidden">
+                    <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-gray-800">Order #${orderId.substring(0, 8)}</p>
+                            <p class="text-sm text-gray-600">Placed on ${formattedDate}</p>
+                        </div>
+                        ${getStatusBadge(orderData.status)}
+                    </div>
+                    <div class="p-4 md:flex md:space-x-6">
+                        <img src="${item.imageUrl || 'https://placehold.co/150x150/e2e8f0/64748b?text=No+Image'}" alt="${item.name}" class="w-32 h-32 object-cover rounded-md mb-4 md:mb-0">
+                        <div class="flex-grow space-y-4">
+                            <div>
+                                <h3 class="font-semibold text-lg">${item.name}</h3>
+                                <p class="text-sm text-gray-600">Size: ${item.size} | Qty: ${item.quantity}</p>
+                                <p class="text-lg font-bold mt-2">Rs. ${payment.total.toLocaleString()}</p>
+                            </div>
+                            <div class="border-t pt-4">
+                                <h4 class="font-semibold text-gray-700">Shipping to:</h4>
+                                <p class="text-sm text-gray-600">${customer.firstName} ${customer.lastName}</p>
+                                <p class="text-sm text-gray-600">${customer.address}, ${customer.city}</p>
+                                <p class="text-sm text-gray-600">${customer.phone}</p>
+                                <div class="mt-2">${updateButtonHTML}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // --- Fetch and Display Orders ---
+        function listenForOrders(userId) {
+            const q = query(collection(db, "orders"), where("userId", "==", userId), orderBy("timestamp", "desc"));
+
+            onSnapshot(q, (querySnapshot) => {
+                ordersContainer.innerHTML = '';
+                currentOrders = [];
+
+                if (querySnapshot.empty) {
+                    ordersContainer.innerHTML = `<div class="text-center py-12 bg-white rounded-lg shadow-sm border"><p class="text-gray-600">You haven't placed any orders yet.</p></div>`;
+                    return;
+                }
+                
+                querySnapshot.forEach((doc) => {
+                    currentOrders.push({ id: doc.id, ...doc.data() });
+                    ordersContainer.innerHTML += createOrderCardHTML(doc);
+                });
+            });
+        }
+        
+        // --- Address Modal Logic ---
+        function openAddressModal(orderId) {
+            const order = currentOrders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const customer = order.customer;
+            document.getElementById('modal-order-id').value = orderId;
+            document.getElementById('first-name').value = customer.firstName || '';
+            document.getElementById('last-name').value = customer.lastName || '';
+            document.getElementById('address').value = customer.address || '';
+            document.getElementById('city').value = customer.city || '';
+            document.getElementById('phone').value = customer.phone || '';
+            
+            addressModal.classList.remove('hidden');
+        }
+
+        function closeAddressModal() {
+            addressModal.classList.add('hidden');
+            addressForm.reset();
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', () => {
+            onAuthStateChanged(auth, (user) => {
+                const userTextEl = document.getElementById('user-text');
+                const cartCountEl = document.getElementById('cart-count');
+
+                if (user) {
+                    userTextEl.textContent = "My Account";
+                    listenForOrders(user.uid);
+                    
+                    // Listen for cart count
+                    onSnapshot(collection(db, 'carts', user.uid, 'items'), snapshot => {
+                        cartCountEl.textContent = snapshot.size;
+                        cartCountEl.classList.toggle('hidden', snapshot.size === 0);
+                    });
+                } else {
+                    userTextEl.textContent = "Log in / Register";
+                    ordersContainer.innerHTML = `<div class="text-center py-12 bg-white rounded-lg shadow-sm border">
+                        <p class="text-gray-600 mb-4">Please log in to view your orders.</p>
+                        <a href="index.html" class="bg-black text-white font-bold py-2 px-6 rounded-md hover:bg-gray-800 transition">Go to Login</a>
+                    </div>`;
+                }
+            });
+
+            // Modal event listeners
+            ordersContainer.addEventListener('click', (e) => {
+                if (e.target.classList.contains('update-address-btn')) {
+                    const orderId = e.target.dataset.orderId;
+                    openAddressModal(orderId);
+                }
+            });
+
+            cancelUpdateBtn.addEventListener('click', closeAddressModal);
+            addressModal.addEventListener('click', (e) => {
+                if (e.target === addressModal) closeAddressModal();
+            });
+
+            addressForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const orderId = document.getElementById('modal-order-id').value;
+                const newCustomerData = {
+                    firstName: document.getElementById('first-name').value,
+                    lastName: document.getElementById('last-name').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    phone: document.getElementById('phone').value,
+                };
+
+                const orderRef = doc(db, 'orders', orderId);
+                try {
+                    await updateDoc(orderRef, { customer: newCustomerData });
+                    showToast("Address updated successfully!");
+                    closeAddressModal();
+                } catch (error) {
+                    console.error("Error updating address: ", error);
+                    showToast("Failed to update address. Please try again.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
