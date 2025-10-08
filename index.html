@@ -362,8 +362,104 @@
             <button id="close-user-modal" class="mt-2 w-full text-gray-600 text-sm py-2">Close</button>
         </div>
     </div>
+<section id="get-in-touch" class="bg-white py-16 sm:py-24">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Contact Our Team</h2>
+                    <p class="mt-4 text-lg leading-8 text-gray-600">
+                        Have questions about our products, an order, or just want to say hello? We'd love to hear from you. Reach out through your preferred method below.
+                    </p>
+                    <div class="mt-10 space-y-4 text-base leading-7 text-gray-600">
+                        <div class="flex gap-x-4">
+                            <div class="h-7 w-7 flex-none">
+                                <svg class="text-teal-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                                </svg>
+                            </div>
+                            <span>Kandy, Sri Lanka</span>
+                        </div>
+                        <div class="flex gap-x-4">
+                            <div class="h-7 w-7 flex-none">
+                               <svg class="text-teal-600" xmlns="http://www.w.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M16.6,14.2l-1.5-0.8c-0.4-0.2-1-0.1-1.3,0.2L13,14.5c-0.1,0.1-0.3,0.2-0.5,0.1c-0.7-0.3-1.8-1-2.9-2.1c-1-1-1.8-2.2-2.1-2.9c-0.1-0.2,0-0.4,0.1-0.5l0.9-0.9c0.3-0.3,0.4-0.9,0.2-1.3l-0.8-1.5C9.4,4.6,9.1,4,8.6,4C8.4,4,8.1,4,7.9,4.1L6.7,4.3C6.2,4.4,5.8,4.8,5.7,5.3C5.5,6.1,5.8,7,6.3,8.3c0.7,1.8,1.9,3.5,3.6,5.1c2.1,2.1,4.2,3.3,6.2,3.6c0.5,0.1,1,0.1,1.5,0.1c0.5,0,1-0.2,1.4-0.5c0.4-0.3,0.7-0.8,0.7-1.3l0.2-1.2C17,14.9,16.9,14.5,16.6,14.2z M12,2C6.5,2,2,6.5,2,12s4.5,10,10,10c5.5,0,10-4.5,10-10S17.5,2,12,2z M12,20c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8S16.4,20,12,20z"/></svg>
+                            </div>
+                            <a href="https://wa.me/94773956355" target="_blank" class="hover:text-gray-900">+94 77 395 6355 (WhatsApp)</a>
+                        </div>
+                        <div class="flex gap-x-4">
+                            <div class="h-7 w-7 flex-none">
+                                <svg class="text-teal-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                </svg>
+                            </div>
+                            <a href="mailto:support@kandyworld.com" class="hover:text-gray-900">support@kandyworld.com</a>
+                        </div>
+                    </div>
+                </div>
 
-    <footer class="bg-gray-800 text-white">
+                <div class="mt-12 lg:mt-0 p-8 bg-gray-50 rounded-2xl">
+                    <h3 class="text-2xl font-semibold leading-7 text-gray-900">Send us a message</h3>
+                    <form id="whatsapp-form" class="mt-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                            <div>
+                                <label for="wa-name" class="block text-sm font-semibold leading-6 text-gray-900">Full Name</label>
+                                <div class="mt-2">
+                                    <input type="text" id="wa-name" name="name" required class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="wa-email" class="block text-sm font-semibold leading-6 text-gray-900">Email Address</label>
+                                <div class="mt-2">
+                                    <input type="email" id="wa-email" name="email" required class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm sm:leading-6">
+                                </div>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="wa-message" class="block text-sm font-semibold leading-6 text-gray-900">Message</label>
+                                <div class="mt-2">
+                                    <textarea id="wa-message" name="message" rows="4" required class="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm sm:leading-6"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8">
+                            <button type="submit" class="w-full bg-teal-600 text-white font-bold py-3 px-6 rounded-md hover:bg-teal-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 transition-colors">Send via WhatsApp</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<script>
+// --- WhatsApp Form Handler ---
+        const whatsappForm = document.getElementById('whatsapp-form');
+        if (whatsappForm) {
+            whatsappForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const name = document.getElementById('wa-name').value;
+                const email = document.getElementById('wa-email').value;
+                const message = document.getElementById('wa-message').value;
+                
+                // Your WhatsApp number without '+' or spaces
+                const phoneNumber = "94773956355"; 
+
+                // Construct the message with clear labels
+                const fullMessage = `New Inquiry from KANDY WORLD Website:\n\n*Name:* ${name}\n*Email:* ${email}\n\n*Message:*\n${message}`;
+                
+                // Encode the message for the URL
+                const encodedMessage = encodeURIComponent(fullMessage);
+                
+                // Create the WhatsApp click-to-chat URL
+                const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+                
+                // Open the URL in a new tab to start the chat
+                window.open(whatsappURL, '_blank');
+            });
+        }
+
+</script>
+
+  <footer class="bg-gray-800 text-white">
         <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div>
@@ -375,10 +471,11 @@
                 <div>
                     <h3 class="text-lg font-semibold mb-4">Shop</h3>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-gray-400 hover:text-white">New Arrivals</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">T-Shirts</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Long Sleeves</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white">Shorts</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Men's Linen Pants</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Ladies' Linen Pants</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Linen Shirts</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Ladies' Linen Shorts</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Viscose Casual Shirts</a></li>
                     </ul>
                 </div>
                 <div>
@@ -409,7 +506,6 @@
             </div>
         </div>
     </footer>
-
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
