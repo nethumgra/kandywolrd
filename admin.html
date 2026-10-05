@@ -65,7 +65,7 @@
 <body class="bg-gray-100 font-sans">
 
     <div class="flex min-h-screen">
-        <aside class="w-64 bg-gray-800 text-white flex flex-col">
+        <aside id="admin-sidebar" class="w-64 bg-gray-800 text-white flex flex-col hidden">
             <div class="p-6 text-2xl font-bold border-b border-gray-700"> KANDY WORLD </div>
             <nav class="flex-1 p-4 space-y-2">
                 <a href="#dashboard"
@@ -284,65 +284,163 @@
         import { db, uploadImageToImgBB, auth } from './firebase-config.js';
         // Import necessary Firestore functions
         import { collection, getDocs, addDoc, serverTimestamp, query, orderBy, doc, deleteDoc, updateDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         // --- CONFIG AND INITIALIZATION ---
         const MASTER_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '30', '32', '34', '36', '38', '40'];
+        const ADMIN_SECRET_ID = '787810';
         let salesChartInstance;
         let orderStatusChartInstance;
 
-        function renderAdminLoginForm() {
-            document.getElementById('main-content').innerHTML = `
-                <div class="max-w-md mx-auto mt-12 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-                    <div class="text-center mb-8">
-                        <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-teal-100 text-teal-600 shadow-sm">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        function isAdminAuthenticated() {
+            return localStorage.getItem('kandy_admin_auth') === ADMIN_SECRET_ID ||
+                   sessionStorage.getItem('kandy_admin_auth') === ADMIN_SECRET_ID;
+        }
+
+        function setAdminAuthenticated() {
+            localStorage.setItem('kandy_admin_auth', ADMIN_SECRET_ID);
+            sessionStorage.setItem('kandy_admin_auth', ADMIN_SECRET_ID);
+        }
+
+        function clearAdminAuthenticated() {
+            localStorage.removeItem('kandy_admin_auth');
+            sessionStorage.removeItem('kandy_admin_auth');
+        }
+
+        function renderAdminIdPrompt() {
+            const sidebar = document.getElementById('admin-sidebar');
+            if (sidebar) sidebar.classList.add('hidden');
+
+            const mainContainer = document.getElementById('main-content');
+            if (!mainContainer) return;
+
+            mainContainer.innerHTML = `
+                <div class="min-h-[75vh] flex items-center justify-center px-4">
+                    <div class="w-full max-w-md bg-white p-8 sm:p-10 rounded-2xl shadow-xl border border-gray-100">
+                        <div class="text-center mb-8">
+                            <div class="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-teal-100 text-teal-600 shadow-sm">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                </svg>
+                            </div>
+                            <span class="inline-block px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold uppercase tracking-wider mb-2">Admin Portal</span>
+                            <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Security Verification</h2>
+                            <p class="text-sm text-gray-500 mt-1">Enter your Admin ID to unlock the dashboard</p>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Admin Portal</h2>
-                        <p class="text-sm text-gray-500 mt-1">Sign in with administrator credentials</p>
-                    </div>
-                    <form id="adminLoginForm" class="space-y-4">
-                        <div>
-                            <label for="admin-email" class="block text-xs font-semibold uppercase text-gray-600 mb-1.5">Admin Email</label>
-                            <input type="email" id="admin-email" required placeholder="admin@kandyworld.com" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition">
+                        <form id="adminPinForm" class="space-y-4" autocomplete="off">
+                            <div>
+                                <label for="admin-pin-input" class="block text-xs font-semibold uppercase text-gray-600 mb-2 text-center">Admin ID</label>
+                                <div class="relative">
+                                    <input 
+                                        type="password" 
+                                        id="admin-pin-input" 
+                                        required 
+                                        autofocus 
+                                        placeholder="••••••••" 
+                                        class="w-full text-center tracking-[0.3em] font-mono text-xl font-bold px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition bg-gray-50 focus:bg-white"
+                                    >
+                                    <button 
+                                        type="button" 
+                                        id="toggle-pin-visibility" 
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 p-1.5 focus:outline-none" 
+                                        title="Show / Hide PIN"
+                                    >
+                                        <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="admin-pin-error" class="text-xs text-red-500 font-semibold text-center min-h-[1.25rem]"></div>
+                            <button 
+                                type="submit" 
+                                id="admin-pin-submit-btn" 
+                                class="w-full bg-black text-white font-semibold py-3.5 rounded-xl hover:bg-gray-800 transition text-sm shadow-md flex items-center justify-center gap-2 group active:scale-[0.99]"
+                            >
+                                <span>Unlock Dashboard</span>
+                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                </svg>
+                            </button>
+                        </form>
+                        <div class="mt-6 text-center">
+                            <a href="index.html" class="text-xs font-medium text-gray-400 hover:text-black transition inline-flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                                </svg>
+                                Return to Storefront
+                            </a>
                         </div>
-                        <div>
-                            <label for="admin-password" class="block text-xs font-semibold uppercase text-gray-600 mb-1.5">Password</label>
-                            <input type="password" id="admin-password" required placeholder="••••••••" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition">
-                        </div>
-                        <div id="admin-login-error" class="text-xs text-red-500 font-medium"></div>
-                        <button type="submit" id="admin-login-submit-btn" class="w-full bg-black text-white font-semibold py-3 rounded-lg hover:bg-gray-800 transition text-sm shadow-md flex items-center justify-center gap-2">
-                            <span>Sign In to Dashboard</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                        </button>
-                    </form>
-                    <div class="mt-6 text-center">
-                        <a href="index.html" class="text-xs font-medium text-gray-400 hover:text-black transition flex items-center justify-center gap-1">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                            Return to Storefront
-                        </a>
                     </div>
                 </div>
             `;
 
-            document.getElementById('adminLoginForm')?.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('admin-email').value.trim();
-                const password = document.getElementById('admin-password').value;
-                const errEl = document.getElementById('admin-login-error');
-                const btn = document.getElementById('admin-login-submit-btn');
-                errEl.textContent = '';
-                btn.disabled = true;
-                btn.innerHTML = 'Signing in...';
-                try {
-                    await signInWithEmailAndPassword(auth, email, password);
-                } catch (err) {
-                    console.error('Admin login error:', err);
-                    errEl.textContent = err.message || 'Invalid administrator credentials.';
-                    btn.disabled = false;
-                    btn.innerHTML = `<span>Sign In to Dashboard</span><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>`;
+            const pinInput = document.getElementById('admin-pin-input');
+            const pinError = document.getElementById('admin-pin-error');
+            const toggleBtn = document.getElementById('toggle-pin-visibility');
+
+            if (pinInput) {
+                pinInput.focus();
+                pinInput.addEventListener('input', () => {
+                    pinError.textContent = '';
+                    pinInput.classList.remove('border-red-400', 'bg-red-50');
+                });
+            }
+
+            if (toggleBtn && pinInput) {
+                toggleBtn.addEventListener('click', () => {
+                    const isPass = pinInput.type === 'password';
+                    pinInput.type = isPass ? 'text' : 'password';
+                });
+            }
+
+            const form = document.getElementById('adminPinForm');
+            if (form) {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const entered = pinInput.value.trim();
+                    if (entered === ADMIN_SECRET_ID) {
+                        pinError.textContent = '';
+                        setAdminAuthenticated();
+                        initAdminDashboard();
+                    } else {
+                        pinError.textContent = 'Invalid Admin ID. Please try again.';
+                        pinInput.classList.add('border-red-400', 'bg-red-50');
+                        pinInput.focus();
+                        pinInput.select();
+                    }
+                });
+            }
+        }
+
+        function initAdminDashboard() {
+            const sidebar = document.getElementById('admin-sidebar');
+            if (sidebar) sidebar.classList.remove('hidden');
+
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const navigate = () => {
+                if (!isAdminAuthenticated()) {
+                    renderAdminIdPrompt();
+                    return;
                 }
-            });
+                const hash = window.location.hash || '#dashboard';
+                sidebarLinks.forEach(link => link.classList.toggle('sidebar-link-active', link.getAttribute('href') === hash));
+                renderContent(hash);
+            };
+
+            if (!window._adminHashBound) {
+                window.addEventListener('hashchange', () => {
+                    if (isAdminAuthenticated()) {
+                        navigate();
+                    } else {
+                        renderAdminIdPrompt();
+                    }
+                });
+                window._adminHashBound = true;
+            }
+
+            navigate();
         }
 
         // --- CORE LOGIC ---
@@ -353,11 +451,14 @@
             }
 
             document.getElementById('adminLogoutBtn')?.addEventListener('click', async () => {
+                clearAdminAuthenticated();
                 try {
                     await signOut(auth);
                 } catch (err) {
                     console.error('Error signing out:', err);
                 }
+                window.location.hash = '';
+                renderAdminIdPrompt();
             });
 
             document.getElementById('main-content').addEventListener('click', handleMainContentClick);
@@ -413,24 +514,18 @@
                 }
             });
 
-            onAuthStateChanged(auth, (user) => {
-                if (!user) {
-                    renderAdminLoginForm();
-                    return;
-                }
-
-                const sidebarLinks = document.querySelectorAll('.sidebar-link');
-                const navigate = () => {
-                    const hash = window.location.hash || '#dashboard';
-                    sidebarLinks.forEach(link => link.classList.toggle('sidebar-link-active', link.getAttribute('href') === hash));
-                    renderContent(hash);
-                };
-                window.addEventListener('hashchange', navigate);
-                navigate();
-            });
+            if (isAdminAuthenticated()) {
+                initAdminDashboard();
+            } else {
+                renderAdminIdPrompt();
+            }
         });
 
         async function renderContent(hash) {
+            if (!isAdminAuthenticated()) {
+                renderAdminIdPrompt();
+                return;
+            }
             const mainContainer = document.getElementById('main-content');
             mainContainer.innerHTML = `<div class="text-center p-8 text-gray-500">Loading Content...</div>`;
             try {
