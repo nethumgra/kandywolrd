@@ -53,23 +53,38 @@ document.write(`<!-- Mobile Navigation Drawer -->
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
+            <!-- Free Shipping Progress Bar -->
+            <div id="cart-drawer-shipping-banner" class="bg-[#faf9f6] border-b px-4 py-3">
+                <div class="flex items-center justify-between text-xs font-medium text-gray-700 mb-1.5">
+                    <span id="cart-shipping-text">Add <strong class="text-teal-700 font-bold">Rs. 5,000</strong> for <span class="font-bold text-gray-900">FREE Delivery 🚚</span></span>
+                    <span id="cart-shipping-percent" class="text-teal-700 font-bold text-[11px]">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+                    <div id="cart-shipping-bar" class="bg-teal-600 h-1.5 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
+
             <!-- Cart Items List (Scrollable) -->
             <div id="cart-drawer-items" class="flex-grow p-4 overflow-y-auto space-y-4 custom-scrollbar">
                 <p class="text-center text-gray-500 py-8">Your shopping bag is empty.</p>
             </div>
             <!-- Summary & Checkout (Sticky bottom) -->
-            <div class="p-4 border-t bg-gray-50 space-y-4">
+            <div class="p-4 border-t bg-gray-50 space-y-3">
                 <div class="flex justify-between font-medium text-gray-700 text-sm">
                     <span>Subtotal</span>
-                    <span id="cart-drawer-subtotal">Rs. 0</span>
+                    <span id="cart-drawer-subtotal" class="font-bold text-gray-900">Rs. 0</span>
                 </div>
-                <p class="text-xs text-gray-400">Shipping and taxes calculated at checkout.</p>
-                <a href="checkout.html" class="block text-center w-full bg-black text-white font-bold py-3.5 rounded-md hover:bg-gray-800 transition">
-                    Proceed to Checkout
-                </a>
-                <button onclick="toggleCartDrawer(false)" class="block text-center w-full text-sm font-semibold text-gray-700 hover:text-black hover:underline transition">
-                    Continue Shopping
+                <p class="text-[11px] text-gray-400">Standard delivery & taxes calculated at checkout.</p>
+                <button onclick="if(window.proceedToCheckoutFromDrawer) window.proceedToCheckoutFromDrawer(); else window.location.href='checkout.html';" class="w-full bg-black text-white font-bold py-3.5 rounded-md hover:bg-gray-800 transition shadow-sm flex items-center justify-center gap-2 text-sm tracking-wide">
+                    <span>Proceed to Checkout</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </button>
+                <div class="flex items-center justify-between pt-1">
+                    <a href="cart.html" class="text-xs font-medium text-gray-600 hover:text-black underline transition">View Full Cart</a>
+                    <button onclick="toggleCartDrawer(false)" class="text-xs font-semibold text-gray-500 hover:text-black transition">
+                        Continue Shopping
+                    </button>
+                </div>
             </div>
         </div>
     </div>

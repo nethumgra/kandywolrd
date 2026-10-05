@@ -327,12 +327,24 @@
                                 <a href="index.html" class="border border-gray-800 text-gray-800 font-bold py-3 px-8 rounded-md hover:bg-gray-100 transition">Continue Shopping</a>
                             </div>
                         </div>
-                    `;
-                    document.getElementById('login-redirect-btn').addEventListener('click', () => {
-                        document.getElementById('auth-modal').classList.remove('hidden');
+                    document.getElementById('login-redirect-btn')?.addEventListener('click', () => {
+                        document.getElementById('auth-modal')?.classList.remove('hidden');
                     });
                 }
             });
+
+            const checkoutBtn = document.getElementById('checkout-btn');
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (!cartItems || cartItems.length === 0) {
+                        alert("Your shopping cart is empty!");
+                        return;
+                    }
+                    sessionStorage.setItem('checkoutItems', JSON.stringify(cartItems));
+                    window.location.href = 'checkout.html';
+                });
+            }
         });
     </script>
 </body>

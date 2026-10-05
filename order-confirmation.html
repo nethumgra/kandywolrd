@@ -263,28 +263,37 @@
                     document.getElementById('email-sent-txt').textContent = data.customer?.contactEmail || 'N/A';
                     
                     const payment = data.payment || {};
-                    document.getElementById('total-paid-txt').textContent = \`Rs. \${(payment.total || 0).toLocaleString()}\`;
+                    document.getElementById('total-paid-txt').textContent = `Rs. ${(payment.total || 0).toLocaleString()}`;
                     document.getElementById('payment-method-txt').textContent = payment.method || 'Cash on Delivery';
                     document.getElementById('delivery-method-txt').textContent = payment.deliveryFee > 0 ? 'Express Shipping' : 'Standard Shipping';
                     
-                    // Populate Item Summary
-                    const item = data.item || {};
-                    const itemHtml = \`
-                        <div class="w-24 h-24 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 border border-gray-200">
-                            <img src="\${item.imageUrl || 'https://placehold.co/100x100?text=Image'}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1 space-y-1 py-1">
-                            <h4 class="text-sm font-bold text-gray-900">\${item.name || 'Product'}</h4>
-                            <p class="text-xs text-gray-500">\${item.color || 'N/A'} &bull; Size \${item.size || 'N/A'}</p>
-                            <p class="text-xs text-gray-600 pt-1">Qty: \${item.quantity || 1}</p>
-                            <p class="text-sm font-bold text-gray-900 pt-2">Rs. \${(item.price * (item.quantity || 1)).toLocaleString()}</p>
-                        </div>
-                    \`;
-                    document.getElementById('item-summary-box').innerHTML = itemHtml;
+                    // Populate Item Summary (supports single item or items array)
+                    const items = data.items || (data.item ? [data.item] : []);
+                    const itemSummaryBox = document.getElementById('item-summary-box');
+                    if (itemSummaryBox) {
+                        if (items.length === 0) {
+                            itemSummaryBox.innerHTML = '<p class="text-sm text-gray-500">Order items details not available.</p>';
+                        } else {
+                            itemSummaryBox.className = 'w-full md:w-1/2 flex flex-col gap-4';
+                            itemSummaryBox.innerHTML = items.map(item => `
+                                <div class="flex gap-4 border-b pb-3 last:border-b-0">
+                                    <div class="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 border border-gray-200">
+                                        <img src="${item.imageUrl || 'https://placehold.co/100x100?text=Image'}" class="w-full h-full object-cover">
+                                    </div>
+                                    <div class="flex-1 space-y-1 py-1">
+                                        <h4 class="text-sm font-bold text-gray-900">${item.name || 'Product'}</h4>
+                                        <p class="text-xs text-gray-500">${item.color && item.color !== 'N/A' ? item.color + ' &bull; ' : ''}Size ${item.size || 'N/A'}</p>
+                                        <p class="text-xs text-gray-600">Qty: ${item.quantity || 1}</p>
+                                        <p class="text-sm font-bold text-gray-900">Rs. ${(Number(item.price || 0) * (item.quantity || 1)).toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            `).join('');
+                        }
+                    }
 
-                    document.getElementById('summary-subtotal').textContent = \`Rs. \${(payment.subtotal || 0).toLocaleString()}\`;
-                    document.getElementById('summary-shipping').textContent = payment.deliveryFee > 0 ? \`Rs. \${payment.deliveryFee.toLocaleString()}\` : 'Free';
-                    document.getElementById('summary-total').textContent = \`Rs. \${(payment.total || 0).toLocaleString()}\`;
+                    document.getElementById('summary-subtotal').textContent = `Rs. ${(payment.subtotal || 0).toLocaleString()}`;
+                    document.getElementById('summary-shipping').textContent = payment.deliveryFee > 0 ? `Rs. ${payment.deliveryFee.toLocaleString()}` : 'Free';
+                    document.getElementById('summary-total').textContent = `Rs. ${(payment.total || 0).toLocaleString()}`;
 
                 }
             } catch (e) {

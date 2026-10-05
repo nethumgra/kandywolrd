@@ -1,7 +1,7 @@
 document.write(`
 <footer class="bg-[#f9fafb] border-t border-gray-200">
     <!-- Top Feature Bar -->
-    <div class="border-b border-gray-200">
+    <div id="footer-features-bar" class="border-b border-gray-200">
         <div class="w-full max-w-[1920px] xl:px-12 mx-auto py-10 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x lg:divide-gray-200">
                 
@@ -161,13 +161,15 @@ document.write(`
                 </button>
             </div>
 
-            <div class="text-sm text-gray-400">
-                &copy; 2024 Kandy World. All rights reserved.
+            <div class="text-sm text-gray-400 flex items-center gap-3">
+                <span>&copy; 2024 Kandy World. All rights reserved.</span>
+                <span class="text-gray-600">&bull;</span>
+                <a href="admin.html" class="text-gray-500 hover:text-gray-300 transition text-xs">Admin Portal</a>
             </div>
 
             <div class="flex items-center gap-2">
                 <!-- Using generic colored blocks to simulate payment icons as placeholder -->
-                <div class="bg-white rounded px-2 py-1"><img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" class="h-4 object-contain"></div>
+                <div class="bg-white rounded px-2 py-1"><img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" class="h-4 object-contain" alt="Visa"></div>
                 <div class="bg-white rounded px-2 py-1"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" class="h-4 object-contain"></div>
                 <div class="bg-white rounded px-2 py-1"><img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" class="h-4 object-contain"></div>
                 <div class="bg-white rounded px-2 py-1"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" class="h-4 object-contain"></div>

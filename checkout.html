@@ -380,7 +380,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, doc, getDoc, setDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, getDoc, getDocs, setDoc, deleteDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -396,7 +396,7 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const mainContent = document.getElementById('main-content');
             const itemContainer = document.getElementById('order-item-container');
             const subtotalEl = document.getElementById('subtotal-price');
@@ -407,7 +407,27 @@
             const shippingRadios = document.querySelectorAll('input[name="shipping-method"]');
 
             let DELIVERY_FEE = 0; // Default to standard (Free)
-            const itemDataString = sessionStorage.getItem('checkoutItem');
+            let checkoutItems = [];
+
+            // 1. Try reading checkoutItems array (from cart)
+            const multiItemsStr = sessionStorage.getItem('checkoutItems');
+            if (multiItemsStr) {
+                try {
+                    const parsed = JSON.parse(multiItemsStr);
+                    if (Array.isArray(parsed) && parsed.length > 0) checkoutItems = parsed;
+                } catch (e) {}
+            }
+
+            // 2. Try reading single checkoutItem (from Buy Now)
+            if (checkoutItems.length === 0) {
+                const singleItemStr = sessionStorage.getItem('checkoutItem');
+                if (singleItemStr) {
+                    try {
+                        const parsed = JSON.parse(singleItemStr);
+                        if (parsed) checkoutItems = [parsed];
+                    } catch (e) {}
+                }
+            }
 
             function prefillForm(address) {
                 if (address.fullName) document.getElementById('full-name').value = address.fullName;
@@ -421,31 +441,28 @@
                 if (address.zipCode) document.getElementById('zip-code').value = address.zipCode;
             }
 
-            if (!itemDataString) {
-                mainContent.innerHTML = `<div class="lg:col-span-12 text-center py-12 bg-white rounded-lg shadow-sm border"><h2 class="text-2xl font-bold text-gray-800">No item selected!</h2><p class="text-gray-600 mt-2">Please select an item to buy now.</p><a href="index.html" class="inline-block bg-black text-white font-bold py-2 px-6 rounded-md hover:bg-gray-800 transition mt-6">Go to Shopping</a></div>`;
-                return;
+            // Render items in Order Summary
+            function renderItems() {
+                if (!itemContainer) return;
+                itemContainer.innerHTML = checkoutItems.map(item => `
+                    <div class="flex gap-4 border-b border-gray-100 pb-3 mb-3 last:border-b-0 last:mb-0 last:pb-0">
+                        <div class="w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 border border-gray-200 relative">
+                            <img src="${item.imageUrl || 'https://placehold.co/100x100?text=Image'}" alt="${item.name}" class="w-full h-full object-cover">
+                            <span class="absolute -top-2 -right-2 bg-black text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold shadow-sm">${item.quantity || 1}</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-semibold text-gray-900 truncate">${item.name}</h4>
+                            <p class="text-xs text-gray-500 mt-0.5">${item.color && item.color !== 'N/A' ? item.color + ' &bull; ' : ''}Size: ${item.size || 'One Size'}</p>
+                        </div>
+                        <div class="text-sm font-bold text-gray-900 whitespace-nowrap">
+                            Rs. ${(Number(item.price || 0) * (item.quantity || 1)).toLocaleString()}
+                        </div>
+                    </div>
+                `).join('');
             }
 
-            const item = JSON.parse(itemDataString);
-
-            // Render Product in Order Summary
-            itemContainer.innerHTML = `
-                <div class="flex gap-4">
-                    <div class="w-16 h-16 bg-gray-200 rounded-md overflow-hidden flex-shrink-0 border border-gray-300 relative">
-                        <img src="${item.imageUrl || 'https://placehold.co/100x100?text=Image'}" alt="Product" class="w-full h-full object-cover">
-                        <span class="absolute -top-2 -right-2 bg-gray-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">${item.quantity}</span>
-                    </div>
-                    <div class="flex-1">
-                        <h4 class="text-sm font-bold text-gray-900">${item.name}</h4>
-                        <p class="text-xs text-gray-500 mt-1">${item.color || 'N/A'} &bull; Size ${item.size}</p>
-                    </div>
-                    <div class="text-sm font-medium text-gray-900">
-                        Rs. ${(item.price * item.quantity).toLocaleString()}
-                    </div>
-                </div>`;
-
             function updatePrices() {
-                const subtotal = item.price * item.quantity;
+                const subtotal = checkoutItems.reduce((sum, item) => sum + (Number(item.price || 0) * (Number(item.quantity) || 1)), 0);
                 const totalPrice = subtotal + DELIVERY_FEE;
                 subtotalEl.textContent = `Rs. ${subtotal.toLocaleString()}`;
                 shippingFeeEl.textContent = DELIVERY_FEE === 0 ? 'Free' : `Rs. ${DELIVERY_FEE.toLocaleString()}`;
@@ -454,8 +471,28 @@
                 return { subtotal, totalPrice };
             }
 
-            // Initial price calc
-            updatePrices();
+            if (checkoutItems.length > 0) {
+                renderItems();
+                updatePrices();
+            } else {
+                // If nothing in session, check logged in user's cart in Firestore
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) {
+                        try {
+                            const cartSnap = await getDocs(collection(db, "carts", user.uid, "items"));
+                            if (!cartSnap.empty) {
+                                checkoutItems = cartSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+                                renderItems();
+                                updatePrices();
+                                return;
+                            }
+                        } catch (e) { console.error("Error fetching cart for checkout:", e); }
+                    }
+                    if (checkoutItems.length === 0) {
+                        mainContent.innerHTML = `<div class="lg:col-span-12 text-center py-16 bg-white rounded-xl shadow-sm border max-w-xl mx-auto"><svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.658-.463 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" /></svg><h2 class="text-2xl font-bold text-gray-900 mb-2">No items to checkout</h2><p class="text-gray-500 text-sm mb-6">Your shopping bag is currently empty.</p><a href="index.html" class="inline-block bg-black text-white font-bold py-3 px-8 rounded-md hover:bg-gray-800 transition">Continue Shopping</a></div>`;
+                    }
+                });
+            }
 
             // Listen for shipping method changes
             shippingRadios.forEach(radio => {
@@ -469,6 +506,11 @@
                 const form = document.getElementById('shipping-form');
                 const emailInput = document.getElementById('contact-email');
 
+                if (checkoutItems.length === 0) {
+                    alert("Please select items to checkout.");
+                    return;
+                }
+
                 if (!emailInput.checkValidity()) {
                     emailInput.reportValidity();
                     return;
@@ -480,19 +522,19 @@
                 }
 
                 placeOrderBtn.disabled = true;
-                placeOrderBtn.innerHTML = `<span class="flex items-center gap-2">Processing...</span>`;
+                placeOrderBtn.innerHTML = `<span class="flex items-center gap-2"><svg class="w-5 h-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing Order...</span>`;
 
                 const shippingAddress = {
-                    contactEmail: emailInput.value,
-                    marketingOptIn: document.getElementById('marketing-optin').checked,
-                    fullName: document.getElementById('full-name').value,
-                    phone: document.getElementById('phone').value,
+                    contactEmail: emailInput.value.trim(),
+                    marketingOptIn: document.getElementById('marketing-optin')?.checked || false,
+                    fullName: document.getElementById('full-name').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
                     country: document.getElementById('country').value,
-                    address: document.getElementById('address').value,
-                    apartment: document.getElementById('apartment').value,
-                    city: document.getElementById('city').value,
+                    address: document.getElementById('address').value.trim(),
+                    apartment: document.getElementById('apartment').value.trim(),
+                    city: document.getElementById('city').value.trim(),
                     state: document.getElementById('state').value,
-                    zipCode: document.getElementById('zip-code').value,
+                    zipCode: document.getElementById('zip-code').value.trim(),
                 };
 
                 const currentUser = auth.currentUser;
@@ -500,7 +542,8 @@
 
                 const orderData = {
                     customer: shippingAddress,
-                    item: item,
+                    items: checkoutItems,
+                    item: checkoutItems[0] || {},
                     payment: {
                         method: 'Cash on Delivery',
                         subtotal: subtotal,
@@ -512,7 +555,7 @@
                     userId: currentUser ? currentUser.uid : 'guest'
                 };
 
-                if (currentUser && document.getElementById('save-address').checked) {
+                if (currentUser && document.getElementById('save-address')?.checked) {
                     try {
                         const userDocRef = doc(db, "users", currentUser.uid);
                         await setDoc(userDocRef, { shippingAddress }, { merge: true });
@@ -524,6 +567,20 @@
                 try {
                     const docRef = await addDoc(collection(db, "orders"), orderData);
                     sessionStorage.removeItem('checkoutItem');
+                    sessionStorage.removeItem('checkoutItems');
+
+                    // If user is logged in, clear their cart in Firestore
+                    if (currentUser) {
+                        try {
+                            const cartItemsSnap = await getDocs(collection(db, "carts", currentUser.uid, "items"));
+                            cartItemsSnap.forEach(d => {
+                                deleteDoc(doc(db, "carts", currentUser.uid, "items", d.id));
+                            });
+                        } catch (e) {
+                            console.error("Could not clear user cart:", e);
+                        }
+                    }
+
                     window.location.href = `order-confirmation.html?orderId=${docRef.id}`;
                 } catch (error) {
                     console.error("Error placing order: ", error);

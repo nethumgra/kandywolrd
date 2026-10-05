@@ -768,18 +768,21 @@
         
         onAuthStateChanged(auth, user => {
             const cartCountEl = document.getElementById('cart-count');
+            const userTextEl = document.getElementById('user-text');
             if (user) {
-                document.getElementById('user-text').textContent = "My Account";
+                if (userTextEl) userTextEl.textContent = "My Account";
                 onSnapshot(collection(db, 'carts', user.uid, 'items'), snapshot => {
-                    cartCountEl.textContent = snapshot.size;
-                    cartCountEl.classList.toggle('hidden', snapshot.size === 0);
+                    if (cartCountEl) {
+                        cartCountEl.textContent = snapshot.size;
+                        cartCountEl.classList.toggle('hidden', snapshot.size === 0);
+                    }
                     
                     const cartItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     if(window.updateCartDrawerUI) window.updateCartDrawerUI(cartItems);
                 });
             } else {
-                document.getElementById('user-text').textContent = "Log in / Register";
-                cartCountEl.classList.add('hidden');
+                if (userTextEl) userTextEl.textContent = "Log in / Register";
+                if (cartCountEl) cartCountEl.classList.add('hidden');
             }
         });
         
