@@ -184,73 +184,116 @@
 
         // --- Status Badge Generator ---
         function getStatusBadge(status) {
-            status = status || 'Pending'; // Default to Pending if status is missing
+            status = status || 'Pending';
             let statusText = status;
             let bgColor = 'bg-gray-100';
             let textColor = 'text-gray-800';
 
             switch (status.toLowerCase()) {
                 case 'new':
-                    statusText = 'Pending';
-                    bgColor = 'bg-yellow-100';
-                    textColor = 'text-yellow-800';
-                    break;
                 case 'pending':
-                    bgColor = 'bg-yellow-100';
-                    textColor = 'text-yellow-800';
+                    statusText = 'Pending';
+                    bgColor = 'bg-amber-100';
+                    textColor = 'text-amber-800';
                     break;
                 case 'confirmed':
-                    bgColor = 'bg-green-100';
-                    textColor = 'text-green-800';
+                    statusText = 'Confirmed';
+                    bgColor = 'bg-teal-100';
+                    textColor = 'text-teal-800';
+                    break;
+                case 'processing':
+                    statusText = 'Processing';
+                    bgColor = 'bg-blue-100';
+                    textColor = 'text-blue-800';
+                    break;
+                case 'shipped':
+                    statusText = 'Shipped';
+                    bgColor = 'bg-indigo-100';
+                    textColor = 'text-indigo-800';
+                    break;
+                case 'delivered':
+                    statusText = 'Delivered';
+                    bgColor = 'bg-emerald-100';
+                    textColor = 'text-emerald-800';
                     break;
                 case 'rejected':
+                case 'cancelled':
+                    statusText = 'Cancelled';
                     bgColor = 'bg-red-100';
                     textColor = 'text-red-800';
                     break;
             }
-            return `<span class="px-3 py-1 text-xs font-medium rounded-full ${bgColor} ${textColor}">${statusText}</span>`;
+            return `<span class="px-3 py-1 text-xs font-semibold rounded-full ${bgColor} ${textColor}">${statusText}</span>`;
         }
 
         // --- Order Card HTML Generator ---
         function createOrderCardHTML(order) {
             const orderData = order.data();
             const orderId = order.id;
-            const item = orderData.item;
-            const customer = orderData.customer;
-            const payment = orderData.payment;
-            const timestamp = orderData.timestamp.toDate();
+            const items = (orderData.items && orderData.items.length > 0) ? orderData.items : (orderData.item ? [orderData.item] : []);
+            const customer = orderData.customer || {};
+            const payment = orderData.payment || {};
+            const customerName = customer.fullName || `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || 'Valued Customer';
+            const timestamp = orderData.timestamp?.toDate ? orderData.timestamp.toDate() : new Date();
             const formattedDate = timestamp.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
             
-            const isUpdatable = orderData.status.toLowerCase() === 'new' || orderData.status.toLowerCase() === 'pending';
+            const isUpdatable = orderData.status?.toLowerCase() === 'new' || orderData.status?.toLowerCase() === 'pending';
             
             const updateButtonHTML = isUpdatable 
-                ? `<button data-order-id="${orderId}" class="update-address-btn text-sm font-medium text-teal-600 hover:underline">Update Address</button>`
-                : `<p class="text-sm text-gray-500">Address cannot be updated now.</p>`;
+                ? `<button data-order-id="${orderId}" class="update-address-btn text-xs font-semibold text-teal-600 hover:text-teal-800 hover:underline mt-2 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    Update Address
+                   </button>`
+                : `<p class="text-xs text-gray-400 mt-2">Address confirmed (Locked)</p>`;
+
+            const itemsHTML = items.map(item => {
+                const itemImg = item.imageUrl || 'https://placehold.co/100x100/e2e8f0/64748b?text=No+Image';
+                const itemSize = typeof item.size === 'object' ? (item.size?.size || 'One Size') : (item.size || 'One Size');
+                const itemColor = item.color && item.color !== 'N/A' ? ` &bull; ${item.color}` : '';
+                const itemPrice = Number(item.price || 0);
+                const itemQty = Number(item.quantity || 1);
+                return `
+                    <div class="flex items-center gap-3.5 py-3 border-b border-gray-100 last:border-b-0">
+                        <img src="${itemImg}" alt="${item.name || 'Product'}" class="w-16 h-16 object-cover rounded-lg bg-gray-50 flex-shrink-0 border border-gray-100">
+                        <div class="flex-grow min-w-0">
+                            <h4 class="font-semibold text-sm text-gray-900 truncate">${item.name || 'Product'}</h4>
+                            <p class="text-xs text-gray-500 mt-0.5">Size: ${itemSize}${itemColor} &bull; Qty: ${itemQty}</p>
+                            <p class="text-xs font-bold text-gray-900 mt-1">Rs. ${(itemPrice * itemQty).toLocaleString()}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
             return `
-                <div class="bg-white border rounded-lg shadow-sm overflow-hidden">
-                    <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+                <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden mb-6">
+                    <div class="p-4 bg-gray-50/80 border-b border-gray-200 flex flex-wrap justify-between items-center gap-2">
                         <div>
-                            <p class="font-bold text-gray-800">Order #${orderId.substring(0, 8)}</p>
-                            <p class="text-sm text-gray-600">Placed on ${formattedDate}</p>
+                            <span class="text-xs font-mono font-bold text-gray-500 uppercase tracking-wider">Order ID</span>
+                            <p class="font-bold text-gray-900 text-sm">#${orderId.substring(0, 8).toUpperCase()}</p>
+                            <p class="text-xs text-gray-500 mt-0.5">Placed on ${formattedDate}</p>
                         </div>
-                        ${getStatusBadge(orderData.status)}
+                        <div class="flex items-center gap-3">
+                            <div class="text-right">
+                                <span class="text-xs text-gray-500">Total</span>
+                                <p class="text-base font-extrabold text-gray-900">Rs. ${(payment.total || 0).toLocaleString()}</p>
+                            </div>
+                            ${getStatusBadge(orderData.status)}
+                        </div>
                     </div>
-                    <div class="p-4 md:flex md:space-x-6">
-                        <img src="${item.imageUrl || 'https://placehold.co/150x150/e2e8f0/64748b?text=No+Image'}" alt="${item.name}" class="w-32 h-32 object-cover rounded-md mb-4 md:mb-0">
-                        <div class="flex-grow space-y-4">
-                            <div>
-                                <h3 class="font-semibold text-lg">${item.name}</h3>
-                                <p class="text-sm text-gray-600">Size: ${item.size} | Qty: ${item.quantity}</p>
-                                <p class="text-lg font-bold mt-2">Rs. ${payment.total.toLocaleString()}</p>
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-2">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 border-b pb-1">Items (${items.length})</h4>
+                            <div class="divide-y divide-gray-100">
+                                ${itemsHTML}
                             </div>
-                            <div class="border-t pt-4">
-                                <h4 class="font-semibold text-gray-700">Shipping to:</h4>
-                                <p class="text-sm text-gray-600">${customer.firstName} ${customer.lastName}</p>
-                                <p class="text-sm text-gray-600">${customer.address}, ${customer.city}</p>
-                                <p class="text-sm text-gray-600">${customer.phone}</p>
-                                <div class="mt-2">${updateButtonHTML}</div>
-                            </div>
+                        </div>
+                        <div class="border-t md:border-t-0 md:border-l md:pl-6 pt-4 md:pt-0">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 border-b pb-1">Delivery Details</h4>
+                            <p class="text-sm font-semibold text-gray-900">${customerName}</p>
+                            <p class="text-xs text-gray-600 mt-1">${customer.address || ''}${customer.city ? ', ' + customer.city : ''}</p>
+                            <p class="text-xs text-gray-600 mt-0.5">${customer.phone || 'No phone'}</p>
+                            ${customer.notes ? `<p class="text-xs text-amber-700 bg-amber-50 p-2 rounded mt-2 border border-amber-200"><strong>Note:</strong> ${customer.notes}</p>` : ''}
+                            ${updateButtonHTML}
                         </div>
                     </div>
                 </div>
@@ -422,17 +465,26 @@
             addressForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const orderId = document.getElementById('modal-order-id').value;
-                const newCustomerData = {
-                    firstName: document.getElementById('first-name').value,
-                    lastName: document.getElementById('last-name').value,
-                    address: document.getElementById('address').value,
-                    city: document.getElementById('city').value,
-                    phone: document.getElementById('phone').value,
+                const order = currentOrders.find(o => o.id === orderId);
+                const prevCustomer = order?.customer || {};
+
+                const newFirstName = document.getElementById('first-name').value.trim();
+                const newLastName = document.getElementById('last-name').value.trim();
+                const newFullName = `${newFirstName} ${newLastName}`.trim();
+
+                const updatedCustomerData = {
+                    ...prevCustomer,
+                    firstName: newFirstName,
+                    lastName: newLastName,
+                    fullName: newFullName || prevCustomer.fullName,
+                    address: document.getElementById('address').value.trim(),
+                    city: document.getElementById('city').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
                 };
 
                 const orderRef = doc(db, 'orders', orderId);
                 try {
-                    await updateDoc(orderRef, { customer: newCustomerData });
+                    await updateDoc(orderRef, { customer: updatedCustomerData });
                     showToast("Address updated successfully!");
                     closeAddressModal();
                 } catch (error) {

@@ -118,7 +118,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, onSnapshot, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, onSnapshot, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         
         const firebaseConfig = {
@@ -134,10 +134,23 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
         
-        const DELIVERY_FEE = 350;
-        const FREE_DELIVERY_THRESHOLD = 5000;
+        let DELIVERY_FEE = 350;
+        let FREE_DELIVERY_THRESHOLD = 7500;
         let cartItems = []; 
         let currentDiscount = 0;
+
+        // Fetch dynamic store configuration if available
+        (async () => {
+            try {
+                const storeCfgDoc = await getDoc(doc(db, "settings", "store_config"));
+                if (storeCfgDoc.exists()) {
+                    const cfg = storeCfgDoc.data();
+                    if (cfg.deliveryFee !== undefined) DELIVERY_FEE = Number(cfg.deliveryFee);
+                    if (cfg.freeThreshold !== undefined) FREE_DELIVERY_THRESHOLD = Number(cfg.freeThreshold);
+                    updateSummary();
+                }
+            } catch(e) {}
+        })();
 
         function createCartItemHTML(item, docId) {
             const isSale = item.oldPrice && item.oldPrice > item.price;
@@ -149,13 +162,16 @@
                 </div>` : 
                 `<p class="text-lg font-bold text-gray-900">Rs. ${item.price.toLocaleString()}</p>`;
 
+            const displaySize = typeof item.size === 'object' ? (item.size?.size || 'One Size') : (item.size || 'One Size');
+            const colorInfo = item.color && item.color !== 'N/A' ? ` | Color: ${item.color}` : '';
+
             return `
                 <div class="card-container bg-white p-4 rounded-lg shadow-sm border flex items-center space-x-4" data-id="${docId}">
                     ${saleBannerHTML}
                     <img src="${item.imageUrl || 'https://placehold.co/100x100/e2e8f0/64748b?text=No+Image'}" alt="${item.name}" class="w-24 h-24 object-cover rounded-md flex-shrink-0">
                     <div class="flex-grow">
                         <p class="font-semibold text-gray-800">${item.name}</p>
-                        <p class="text-sm text-gray-600">Size: ${item.size}</p>
+                        <p class="text-sm text-gray-600">Size: ${displaySize}${colorInfo}</p>
                         ${priceHTML}
                     </div>
                     <div class="flex items-center space-x-4">
@@ -326,7 +342,7 @@
                                 <button id="login-redirect-btn" class="bg-black text-white font-bold py-3 px-8 rounded-md hover:bg-gray-800 transition">Log In</button>
                                 <a href="index.html" class="border border-gray-800 text-gray-800 font-bold py-3 px-8 rounded-md hover:bg-gray-100 transition">Continue Shopping</a>
                             </div>
-                        </div>
+                        </div>`;
                     document.getElementById('login-redirect-btn')?.addEventListener('click', () => {
                         document.getElementById('auth-modal')?.classList.remove('hidden');
                     });

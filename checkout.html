@@ -206,6 +206,11 @@
                                 class="w-full border border-gray-300 rounded-md px-4 py-3 text-sm focus:ring-black focus:border-black outline-none">
                         </div>
                     </div>
+                    <div>
+                        <label for="order-notes" class="block text-sm font-medium text-gray-700 mb-1">Delivery Notes / Special Instructions (Optional)</label>
+                        <textarea id="order-notes" rows="2" placeholder="e.g. Call before arrival, leave at security, deliver after 5 PM"
+                            class="w-full border border-gray-300 rounded-md px-4 py-2.5 text-sm focus:ring-black focus:border-black outline-none resize-none"></textarea>
+                    </div>
                     <div class="flex items-center gap-2 mt-2 hidden">
                         <!-- Hidden because we can't fully save custom address structure to auth easily without modifying user model schema more -->
                         <input type="checkbox" id="save-address"
@@ -221,18 +226,18 @@
                 <div class="border border-gray-200 rounded-md divide-y divide-gray-200 bg-gray-50">
                     <label class="flex items-center justify-between p-4 cursor-pointer">
                         <div class="flex items-center gap-3">
-                            <input type="radio" name="shipping-method" value="0"
+                            <input type="radio" name="shipping-method" data-type="standard" value="350"
                                 class="w-4 h-4 text-black focus:ring-black border-gray-300 accent-black" checked>
                             <div>
                                 <div class="text-sm font-medium text-gray-900">Standard Shipping</div>
-                                <div class="text-xs text-gray-500">3 - 6 business days</div>
+                                <div class="text-xs text-gray-500">3 - 6 business days (Free over Rs. 7,500)</div>
                             </div>
                         </div>
-                        <span class="text-sm font-semibold text-gray-900">Free</span>
+                        <span id="standard-shipping-fee-label" class="text-sm font-semibold text-gray-900">Rs. 350</span>
                     </label>
                     <label class="flex items-center justify-between p-4 cursor-pointer">
                         <div class="flex items-center gap-3">
-                            <input type="radio" name="shipping-method" value="750"
+                            <input type="radio" name="shipping-method" data-type="express" value="750"
                                 class="w-4 h-4 text-black focus:ring-black border-gray-300 accent-black">
                             <div>
                                 <div class="text-sm font-medium text-gray-900">Express Shipping</div>
@@ -461,8 +466,37 @@
                 `).join('');
             }
 
+            let FREE_DELIVERY_THRESHOLD = 7500;
+            let BASE_DELIVERY_FEE = 350;
+
+            (async () => {
+                try {
+                    const storeCfgDoc = await getDoc(doc(db, "settings", "store_config"));
+                    if (storeCfgDoc.exists()) {
+                        const cfg = storeCfgDoc.data();
+                        if (cfg.deliveryFee !== undefined) BASE_DELIVERY_FEE = Number(cfg.deliveryFee);
+                        if (cfg.freeThreshold !== undefined) FREE_DELIVERY_THRESHOLD = Number(cfg.freeThreshold);
+                        updatePrices();
+                    }
+                } catch(e) {}
+            })();
+
+            function updateShippingOptions(subtotal) {
+                const stdRadio = document.querySelector('input[name="shipping-method"][data-type="standard"]');
+                const stdFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : BASE_DELIVERY_FEE;
+                const stdLabel = document.getElementById('standard-shipping-fee-label');
+                if (stdRadio) stdRadio.value = stdFee;
+                if (stdLabel) stdLabel.textContent = stdFee === 0 ? 'Free' : `Rs. ${stdFee.toLocaleString()}`;
+
+                const selectedRadio = document.querySelector('input[name="shipping-method"]:checked');
+                if (selectedRadio) {
+                    DELIVERY_FEE = parseInt(selectedRadio.value) || 0;
+                }
+            }
+
             function updatePrices() {
                 const subtotal = checkoutItems.reduce((sum, item) => sum + (Number(item.price || 0) * (Number(item.quantity) || 1)), 0);
+                updateShippingOptions(subtotal);
                 const totalPrice = subtotal + DELIVERY_FEE;
                 subtotalEl.textContent = `Rs. ${subtotal.toLocaleString()}`;
                 shippingFeeEl.textContent = DELIVERY_FEE === 0 ? 'Free' : `Rs. ${DELIVERY_FEE.toLocaleString()}`;
@@ -524,10 +558,20 @@
                 placeOrderBtn.disabled = true;
                 placeOrderBtn.innerHTML = `<span class="flex items-center gap-2"><svg class="w-5 h-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing Order...</span>`;
 
+                const fullNameVal = document.getElementById('full-name').value.trim();
+                const nameParts = fullNameVal.split(' ').filter(Boolean);
+                const firstNameVal = nameParts[0] || 'Customer';
+                const lastNameVal = nameParts.slice(1).join(' ') || '';
+                const emailVal = emailInput.value.trim();
+                const notesVal = document.getElementById('order-notes')?.value.trim() || '';
+
                 const shippingAddress = {
-                    contactEmail: emailInput.value.trim(),
+                    contactEmail: emailVal,
+                    email: emailVal,
                     marketingOptIn: document.getElementById('marketing-optin')?.checked || false,
-                    fullName: document.getElementById('full-name').value.trim(),
+                    fullName: fullNameVal,
+                    firstName: firstNameVal,
+                    lastName: lastNameVal,
                     phone: document.getElementById('phone').value.trim(),
                     country: document.getElementById('country').value,
                     address: document.getElementById('address').value.trim(),
@@ -535,6 +579,7 @@
                     city: document.getElementById('city').value.trim(),
                     state: document.getElementById('state').value,
                     zipCode: document.getElementById('zip-code').value.trim(),
+                    notes: notesVal
                 };
 
                 const currentUser = auth.currentUser;

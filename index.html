@@ -1069,7 +1069,7 @@
                     <img src="${item.imageUrl || 'https://placehold.co/100x100/e2e8f0/64748b?text=No+Image'}" alt="${item.name}" class="w-16 h-16 object-cover rounded-md flex-shrink-0 border border-gray-100">
                     <div class="flex-grow min-w-0">
                         <p class="font-semibold text-gray-800 text-sm truncate">${item.name}</p>
-                        <p class="text-xs text-gray-500 mt-0.5">${item.color && item.color !== 'N/A' ? item.color + ' &bull; ' : ''}Size: ${item.size || 'One Size'}</p>
+                        <p class="text-xs text-gray-500 mt-0.5">${item.color && item.color !== 'N/A' ? item.color + ' &bull; ' : ''}Size: ${typeof item.size === 'object' ? (item.size?.size || 'One Size') : (item.size || 'One Size')}</p>
                         <div class="flex items-center gap-2 mt-1">
                             <span class="text-sm font-bold text-gray-900">Rs. ${(Number(item.price) || 0).toLocaleString()}</span>
                             ${item.oldPrice ? `<span class="text-xs text-gray-400 line-through">Rs. ${Number(item.oldPrice).toLocaleString()}</span>` : ''}
@@ -1133,9 +1133,21 @@
             }
             const product = allProductsCache.find(p => p.id === productId);
             if (!product) return;
+
+            // Check if sizes are defined and if all are sold out
+            let chosenSize = 'One Size';
+            if (Array.isArray(product.sizes) && product.sizes.length > 0) {
+                const inStockItem = product.sizes.find(s => typeof s === 'object' ? s.stock === 'In Stock' : true);
+                if (inStockItem) {
+                    chosenSize = typeof inStockItem === 'object' ? (inStockItem.size || 'One Size') : inStockItem;
+                } else {
+                    alert('Sorry, all sizes for this product are currently Sold Out!');
+                    return;
+                }
+            }
+
             const primaryImage = (product.imageUrls && product.imageUrls[0]) || product.imageUrl || '';
-            const defaultSize = (product.sizes && product.sizes.length > 0) ? product.sizes[0] : 'One Size';
-            const cartItemRef = doc(db, 'carts', user.uid, 'items', `${productId}_${defaultSize}`);
+            const cartItemRef = doc(db, 'carts', user.uid, 'items', `${productId}_${chosenSize}`);
             try {
                 const existing = await getDoc(cartItemRef);
                 if (existing.exists()) {
@@ -1146,7 +1158,7 @@
                         name: product.name,
                         price: Number(product.price) || 0,
                         imageUrl: primaryImage,
-                        size: defaultSize,
+                        size: chosenSize,
                         quantity: 1,
                         addedAt: new Date()
                     });
@@ -1471,8 +1483,17 @@
                     return;
                 }
 
-                // Add to Firestore cart (default size S if not specified)
-                const cartItemRef = doc(db, 'carts', user.uid, 'items', `${productData.id}_drag`);
+                // Determine available size
+                let dragSize = 'One Size';
+                const originalProd = allProductsCache.find(p => p.id === productData.id);
+                if (originalProd && Array.isArray(originalProd.sizes) && originalProd.sizes.length > 0) {
+                    const inStockItem = originalProd.sizes.find(s => typeof s === 'object' ? s.stock === 'In Stock' : true);
+                    if (inStockItem) {
+                        dragSize = typeof inStockItem === 'object' ? (inStockItem.size || 'One Size') : inStockItem;
+                    }
+                }
+
+                const cartItemRef = doc(db, 'carts', user.uid, 'items', `${productData.id}_${dragSize}`);
                 try {
                     const existing = await getDoc(cartItemRef);
                     if (existing.exists()) {
@@ -1483,7 +1504,7 @@
                             name: productData.name,
                             price: Number(productData.price),
                             imageUrl: productData.imageUrl,
-                            size: 'One Size',
+                            size: dragSize,
                             quantity: 1,
                             addedAt: new Date()
                         });
