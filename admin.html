@@ -340,6 +340,7 @@
         const ADMIN_SECRET_ID = '787810';
         let salesChartInstance;
         let orderStatusChartInstance;
+        let allLoadedProducts = [];
 
         function isAdminAuthenticated() {
             return localStorage.getItem('kandy_admin_auth') === ADMIN_SECRET_ID ||
@@ -918,14 +919,147 @@
         }
 
         async function renderProductsPage(container) {
-            container.innerHTML = `<div class="flex justify-between items-center mb-6"><h1 class="text-3xl font-bold text-gray-800">Manage Products</h1><button id="show-add-product-form-btn" class="bg-teal-600 text-white font-bold py-2 px-4 rounded-md hover:bg-teal-700">+ Add New Product</button></div><div id="add-product-container" class="w-full bg-white p-8 rounded-xl shadow-lg mb-8 hidden"><h2 class="text-2xl font-bold mb-6 text-gray-800">Add a New Product</h2><form id="addProductForm" class="space-y-6"><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label for="productName" class="block text-sm">Product Name</label><input type="text" id="productName" required class="w-full mt-1 px-4 py-2 border rounded-md"></div><div><label for="productPrice" class="block text-sm">Price (Rs.)</label><input type="number" id="productPrice" required class="w-full mt-1 px-4 py-2 border rounded-md"></div></div><div><label for="productDescription" class="block text-sm">Description</label><textarea id="productDescription" rows="4" class="w-full mt-1 px-4 py-2 border rounded-md"></textarea></div><div><label for="productCategory" class="block text-sm">Category</label><select id="productCategory" required class="w-full mt-1 px-4 py-2 border rounded-md bg-white"><option value="">Select a Category</option></select></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div><label for="productImageFile" class="block text-sm">Main Image</label><input type="file" id="productImageFile" required accept="image/*" class="w-full mt-1 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100"></div><div><label for="productImageFile2" class="block text-sm">Hover Image (Optional)</label><input type="file" id="productImageFile2" accept="image/*" class="w-full mt-1 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100"></div></div><div><label class="block text-sm">Available Sizes (In Stock)</label><div id="add-sizes-container" class="grid grid-cols-4 sm:grid-cols-6 gap-2 mt-2"></div></div><div><label class="block text-sm">Product Colors</label><div id="add-colors-container" class="space-y-2 mt-2"></div><button type="button" id="btn-add-color-row" class="mt-2 text-sm text-teal-600 font-semibold hover:underline">+ Add Color</button></div><div class="text-right pt-4"><button type="button" id="cancel-add-product-btn" class="border font-bold py-2 px-4 rounded-md mr-2">Cancel</button><button type="submit" class="bg-teal-600 text-white font-bold py-2 px-4 rounded-md">Add Product</button></div><div id="statusMessage" class="mt-4 text-center font-medium"></div></form></div><div class="bg-white p-6 rounded-lg shadow-md"><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b bg-gray-50"><th class="p-4 font-semibold">Image</th><th class="p-4 font-semibold">Name</th><th class="p-4 font-semibold">Category</th><th class="p-4 font-semibold">Price</th><th class="p-4 font-semibold">Available Sizes</th><th class="p-4 font-semibold">Actions</th></tr></thead><tbody id="products-table-body"></tbody></table></div></div>`;
+            container.innerHTML = `
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">Manage Products</h1>
+                        <p class="text-sm text-gray-500 mt-1">Review, filter, edit, and track your product inventory & variants</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="show-add-product-form-btn" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 px-5 rounded-xl shadow-sm transition flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            <span>Add New Product</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="add-product-container" class="w-full bg-white p-8 rounded-2xl shadow-lg mb-8 border border-gray-100 hidden">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800">Add a New Product</h2>
+                    <form id="addProductForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="productName" class="block text-sm font-medium text-gray-700">Product Name</label>
+                                <input type="text" id="productName" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                            <div>
+                                <label for="productPrice" class="block text-sm font-medium text-gray-700">Price (Rs.)</label>
+                                <input type="number" id="productPrice" required class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-teal-500 focus:border-teal-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="productDescription" class="block text-sm font-medium text-gray-700">Description</label>
+                            <textarea id="productDescription" rows="4" class="w-full mt-1 px-4 py-2 border rounded-md focus:ring-teal-500 focus:border-teal-500"></textarea>
+                        </div>
+                        <div>
+                            <label for="productCategory" class="block text-sm font-medium text-gray-700">Category</label>
+                            <select id="productCategory" required class="w-full mt-1 px-4 py-2 border rounded-md bg-white focus:ring-teal-500 focus:border-teal-500">
+                                <option value="">Select a Category</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="productImageFile" class="block text-sm font-medium text-gray-700">Main Image</label>
+                                <input type="file" id="productImageFile" required accept="image/*" class="w-full mt-1 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+                            </div>
+                            <div>
+                                <label for="productImageFile2" class="block text-sm font-medium text-gray-700">Hover Image (Optional)</label>
+                                <input type="file" id="productImageFile2" accept="image/*" class="w-full mt-1 text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-yellow-50 file:text-yellow-700 hover:file:bg-yellow-100">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Available Sizes (In Stock)</label>
+                            <div id="add-sizes-container" class="grid grid-cols-4 sm:grid-cols-6 gap-2 mt-2"></div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Product Colors</label>
+                            <div id="add-colors-container" class="space-y-2 mt-2"></div>
+                            <button type="button" id="btn-add-color-row" class="mt-2 text-sm text-teal-600 font-semibold hover:underline">+ Add Color</button>
+                        </div>
+                        <div class="text-right pt-4">
+                            <button type="button" id="cancel-add-product-btn" class="border font-bold py-2 px-4 rounded-md mr-2 hover:bg-gray-50">Cancel</button>
+                            <button type="submit" class="bg-teal-600 text-white font-bold py-2 px-6 rounded-md hover:bg-teal-700 shadow">Add Product</button>
+                        </div>
+                        <div id="statusMessage" class="mt-4 text-center font-medium"></div>
+                    </form>
+                </div>
+
+                <!-- Search & Filters Toolbar -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
+                        <!-- Search Box -->
+                        <div class="relative flex-1 min-w-[220px]">
+                            <input type="text" id="product-search-input" placeholder="Search by name, category, or color..." class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-teal-500 focus:border-teal-500 bg-gray-50/50 focus:bg-white transition">
+                            <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+                        <!-- Category Filter Dropdown -->
+                        <div class="w-48">
+                            <select id="product-category-filter" class="w-full py-2.5 px-3 border border-gray-300 rounded-xl text-sm bg-white focus:ring-teal-500 focus:border-teal-500 font-medium">
+                                <option value="">All Categories</option>
+                            </select>
+                        </div>
+                        <!-- Stock Status Dropdown -->
+                        <div class="w-40">
+                            <select id="product-stock-filter" class="w-full py-2.5 px-3 border border-gray-300 rounded-xl text-sm bg-white focus:ring-teal-500 focus:border-teal-500 font-medium">
+                                <option value="all">All Stock</option>
+                                <option value="in-stock">In Stock Only</option>
+                                <option value="sold-out">Sold Out Only</option>
+                            </select>
+                        </div>
+                        <button id="reset-product-filters-btn" class="hidden text-xs text-red-600 hover:text-red-800 font-bold underline px-2 py-1">Reset Filters</button>
+                    </div>
+                    <!-- Counter Badge -->
+                    <div class="flex items-center">
+                        <span id="products-count-badge" class="text-xs font-semibold text-gray-600 bg-gray-100 px-3.5 py-2 rounded-xl border border-gray-200">
+                            Loading products...
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Products Table Card -->
+                <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b bg-gray-50/80 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    <th class="p-4">Image</th>
+                                    <th class="p-4">Product & Colors</th>
+                                    <th class="p-4">Category</th>
+                                    <th class="p-4">Price</th>
+                                    <th class="p-4">Stock & Sizes</th>
+                                    <th class="p-4 text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body" class="divide-y divide-gray-100">
+                                <tr><td colspan="6" class="p-8 text-center text-gray-500">Loading products...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>`;
 
             const sizesContainer = document.getElementById('add-sizes-container');
-            sizesContainer.innerHTML = MASTER_SIZES.map(size => `<div><input type="checkbox" id="size-add-${size}" name="sizes" value="${size}" class="size-checkbox hidden peer"><label for="size-add-${size}" class="block w-full text-center border rounded-md py-2 px-3 text-sm cursor-pointer peer-checked:bg-teal-600 peer-checked:text-white peer-checked:border-teal-600">${size}</label></div>`).join('');
+            if (sizesContainer) {
+                sizesContainer.innerHTML = MASTER_SIZES.map(size => `<div><input type="checkbox" id="size-add-${size}" name="sizes" value="${size}" class="size-checkbox hidden peer"><label for="size-add-${size}" class="block w-full text-center border rounded-md py-2 px-3 text-sm cursor-pointer peer-checked:bg-teal-600 peer-checked:text-white peer-checked:border-teal-600">${size}</label></div>`).join('');
+            }
+
+            // Setup Filter Listeners
+            document.getElementById('product-search-input')?.addEventListener('input', filterAndRenderProducts);
+            document.getElementById('product-category-filter')?.addEventListener('change', filterAndRenderProducts);
+            document.getElementById('product-stock-filter')?.addEventListener('change', filterAndRenderProducts);
+            document.getElementById('reset-product-filters-btn')?.addEventListener('click', () => {
+                const sInput = document.getElementById('product-search-input');
+                const cSelect = document.getElementById('product-category-filter');
+                const stSelect = document.getElementById('product-stock-filter');
+                if (sInput) sInput.value = '';
+                if (cSelect) cSelect.value = '';
+                if (stSelect) stSelect.value = 'all';
+                filterAndRenderProducts();
+            });
 
             await populateCategoryDropdown(document.getElementById('productCategory'));
             await populateProductsTable();
-        }        async function renderCategoriesPage(container) {
+        }
+
+        async function renderCategoriesPage(container) {
             container.innerHTML = `<div class="flex justify-between items-center mb-6"><h1 class="text-3xl font-bold text-gray-800">Manage Categories</h1></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8"><div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md"><h2 class="text-xl font-bold text-gray-800 mb-4">Existing Categories</h2><div class="overflow-x-auto"><table class="w-full text-left"><thead><tr class="border-b bg-gray-50"><th class="p-4 font-semibold">Logo</th><th class="p-4 font-semibold">Category Name</th><th class="p-4 font-semibold">Actions</th></tr></thead><tbody id="categories-table-body"></tbody></table></div></div><div class="bg-white p-8 rounded-xl shadow-lg"><h2 class="text-xl font-bold mb-6 text-gray-800">Add New Category</h2><form id="addCategoryForm" class="space-y-4"><div><label for="categoryName" class="block text-sm font-medium text-gray-700">Category Name</label><input type="text" id="categoryName" required class="mt-1 w-full px-4 py-2 border rounded-md"></div><div><label class="block text-sm font-medium text-gray-700 mb-2">Category Logo</label><div class="mt-1 flex items-center gap-4"><img id="categoryLogoPreview" src="https://placehold.co/100x100?text=No+Logo" class="w-20 h-20 object-cover rounded bg-gray-100"><div class="flex-grow"><label for="categoryLogoFile" class="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 inline-block font-semibold">Choose Logo</label><input type="file" id="categoryLogoFile" class="sr-only" accept="image/*"><p id="categoryLogoStatus" class="text-xs text-gray-500 mt-1">Select a file...</p></div></div><p class="text-xs text-gray-500 mt-2">This logo will be shown on the homepage as the category card image.</p></div><div><label class="block text-sm font-medium text-gray-700 mb-2">Category Banner (Optional)</label><div class="mt-1 flex items-center gap-4"><img id="categoryBannerPreview" src="https://placehold.co/300x100?text=No+Banner" class="w-full h-20 object-cover rounded bg-gray-100"><div class="flex-grow"><label for="categoryBannerFile" class="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 inline-block font-semibold">Choose Banner</label><input type="file" id="categoryBannerFile" class="sr-only" accept="image/*"><p id="categoryBannerStatus" class="text-xs text-gray-500 mt-1">Select a file...</p></div></div><p class="text-xs text-gray-500 mt-2">This banner will be shown on top of the products in the category.</p></div><div class="text-right pt-2"><button type="submit" id="addCategoryBtn" class="bg-teal-600 text-white font-bold py-2 px-4 rounded-md w-full">Add Category</button></div><div id="categoryStatusMessage" class="mt-3 text-center font-medium"></div></form></div></div>`;
 
             await populateCategoriesTable();
@@ -1073,17 +1207,196 @@
         }
 
         async function populateProductsTable() {
-            const productDocs = (await fetchProducts()).docs;
+            const tableBody = document.getElementById('products-table-body');
+            try {
+                const productDocs = (await fetchProducts()).docs;
+                allLoadedProducts = productDocs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                // Populate category filter dropdown
+                const catFilterSelect = document.getElementById('product-category-filter');
+                if (catFilterSelect) {
+                    const cats = [...new Set(allLoadedProducts.map(p => p.category).filter(Boolean))].sort();
+                    const curVal = catFilterSelect.value;
+                    catFilterSelect.innerHTML = '<option value="">All Categories</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+                    if (curVal && cats.includes(curVal)) {
+                        catFilterSelect.value = curVal;
+                    }
+                }
+
+                filterAndRenderProducts();
+            } catch (err) {
+                console.error("Error populating products:", err);
+                if (tableBody) tableBody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-red-500 font-semibold">Failed to load products.</td></tr>';
+            }
+        }
+
+        function filterAndRenderProducts() {
+            const searchVal = document.getElementById('product-search-input')?.value.toLowerCase().trim() || '';
+            const catVal = document.getElementById('product-category-filter')?.value || '';
+            const stockVal = document.getElementById('product-stock-filter')?.value || 'all';
+
+            const filtered = allLoadedProducts.filter(p => {
+                const nameMatch = (p.name || '').toLowerCase().includes(searchVal);
+                const catMatch = (p.category || '').toLowerCase().includes(searchVal);
+                const idMatch = (p.id || '').toLowerCase().includes(searchVal);
+                const colorMatch = (p.colors || []).some(c => (c.name || '').toLowerCase().includes(searchVal)) || (p.color || '').toLowerCase().includes(searchVal);
+                const matchesSearch = !searchVal || nameMatch || catMatch || idMatch || colorMatch;
+
+                const matchesCategory = !catVal || p.category === catVal;
+
+                const inStockSizes = (p.sizes || []).filter(s => s.stock === 'In Stock');
+                const isSoldOut = inStockSizes.length === 0;
+                let matchesStock = true;
+                if (stockVal === 'in-stock') matchesStock = !isSoldOut;
+                if (stockVal === 'sold-out') matchesStock = isSoldOut;
+
+                return matchesSearch && matchesCategory && matchesStock;
+            });
+
+            renderProductsTableRows(filtered);
+
+            const countBadge = document.getElementById('products-count-badge');
+            if (countBadge) {
+                countBadge.textContent = `Showing ${filtered.length} of ${allLoadedProducts.length} Products`;
+            }
+
+            const resetBtn = document.getElementById('reset-product-filters-btn');
+            if (resetBtn) {
+                if (searchVal || catVal || stockVal !== 'all') {
+                    resetBtn.classList.remove('hidden');
+                } else {
+                    resetBtn.classList.add('hidden');
+                }
+            }
+        }
+
+        function renderProductsTableRows(products) {
             const tableBody = document.getElementById('products-table-body');
             if (!tableBody) return;
-            if (productDocs.length === 0) { tableBody.innerHTML = '<tr><td colspan="6" class="p-4 text-center">No products found.</td></tr>'; return; }
-            tableBody.innerHTML = productDocs.map(doc => {
-                const p = doc.data();
+            if (products.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="p-12 text-center text-gray-500">
+                            <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            <p class="font-semibold text-gray-700">No products found matching your search or filters.</p>
+                            <button type="button" id="inner-reset-filters-btn" class="mt-2 text-sm text-teal-600 font-semibold hover:underline">Reset Filters</button>
+                        </td>
+                    </tr>`;
+                document.getElementById('inner-reset-filters-btn')?.addEventListener('click', () => {
+                    document.getElementById('reset-product-filters-btn')?.click();
+                });
+                return;
+            }
+
+            tableBody.innerHTML = products.map(p => {
                 const displayImage = (p.imageUrls && p.imageUrls[0]) ? p.imageUrls[0] : (p.imageUrl || 'https://placehold.co/100x100?text=No+Image');
-                const availableSizes = (p.sizes || []).filter(s => s.stock === 'In Stock').map(s => s.size).join(', ');
-                const stockStatusHtml = availableSizes ? `<span class="text-green-800">${availableSizes}</span>` : `<span class="text-red-800">Sold Out</span>`;
-                return `<tr class="border-b hover:bg-gray-50"><td class="p-2"><img src="${displayImage}" alt="${p.name || ''}" class="w-16 h-16 object-cover rounded-md bg-gray-100"></td><td class="p-4 font-medium">${p.name || 'N/A'}</td><td class="p-4">${p.category || 'N/A'}</td><td class="p-4">Rs. ${(p.price || 0).toLocaleString()}</td><td class="p-4 text-sm">${stockStatusHtml}</td><td class="p-4"><button data-id="${doc.id}" class="edit-btn text-blue-600 hover:underline text-sm">Edit</button><button data-id="${doc.id}" class="delete-btn text-red-600 hover:underline text-sm ml-2">Delete</button></td></tr>`;
+                const inStockSizes = (p.sizes || []).filter(s => s.stock === 'In Stock').map(s => s.size);
+                const isSoldOut = inStockSizes.length === 0;
+
+                const stockStatusHtml = isSoldOut
+                    ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">Sold Out</span>`
+                    : `<div class="space-y-1">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-700">In Stock</span>
+                        <p class="text-xs text-gray-600 font-medium">${inStockSizes.join(', ')}</p>
+                       </div>`;
+
+                let colorsHtml = '';
+                if (p.colors && p.colors.length > 0) {
+                    colorsHtml = `
+                        <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                            ${p.colors.map(c => `
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-gray-200 bg-gray-50 text-[11px] text-gray-700 font-medium" title="${c.name || ''}">
+                                    <span class="w-2.5 h-2.5 rounded-full border border-gray-300 flex-shrink-0" style="background-color: ${c.hex || '#ccc'};"></span>
+                                    <span>${c.name || ''}</span>
+                                </span>
+                            `).join('')}
+                        </div>`;
+                } else if (p.color) {
+                    colorsHtml = `
+                        <div class="mt-1.5">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md border border-gray-200 bg-gray-50 text-xs text-gray-700 font-medium">
+                                ${p.color}
+                            </span>
+                        </div>`;
+                }
+
+                const isSale = p.oldPrice && Number(p.oldPrice) > Number(p.price);
+                const priceHtml = isSale
+                    ? `<div>
+                        <span class="text-gray-900 font-bold">Rs. ${Number(p.price || 0).toLocaleString()}</span>
+                        <span class="text-xs text-gray-400 line-through block">Rs. ${Number(p.oldPrice).toLocaleString()}</span>
+                        <span class="inline-block px-1.5 py-0.2 bg-red-50 text-red-600 text-[10px] font-bold rounded">SALE</span>
+                       </div>`
+                    : `<span class="text-gray-900 font-bold">Rs. ${Number(p.price || 0).toLocaleString()}</span>`;
+
+                return `
+                    <tr class="border-b border-gray-100 hover:bg-gray-50/80 transition group" id="product-row-${p.id}">
+                        <td class="p-4">
+                            <div class="w-14 h-16 rounded-lg overflow-hidden border border-gray-200 bg-gray-100 flex-shrink-0 shadow-2xs">
+                                <img src="${displayImage}" alt="${p.name || ''}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <div class="font-semibold text-gray-900 text-sm">${p.name || 'Untitled'}</div>
+                            <div class="text-[11px] text-gray-400 font-mono mt-0.5">ID: #${p.id.substring(0, 8)}</div>
+                            ${colorsHtml}
+                        </td>
+                        <td class="p-4">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-teal-50 text-teal-700 border border-teal-100">
+                                ${p.category || 'General'}
+                            </span>
+                        </td>
+                        <td class="p-4 whitespace-nowrap">
+                            ${priceHtml}
+                        </td>
+                        <td class="p-4">
+                            ${stockStatusHtml}
+                        </td>
+                        <td class="p-4 whitespace-nowrap text-center">
+                            <div class="flex items-center justify-center gap-1.5">
+                                <a href="product-detail.html?id=${p.id}" target="_blank" class="p-2 rounded-lg text-gray-500 hover:text-teal-600 hover:bg-teal-50 transition border border-transparent hover:border-teal-200" title="View in Storefront">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                </a>
+                                <button data-id="${p.id}" class="toggle-stock-btn p-2 rounded-lg text-amber-600 hover:bg-amber-50 transition border border-transparent hover:border-amber-200" title="Quick Toggle Stock (${isSoldOut ? 'Mark In Stock' : 'Mark Sold Out'})">
+                                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                </button>
+                                <button data-id="${p.id}" class="edit-btn p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition border border-transparent hover:border-blue-200" title="Edit Product">
+                                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                </button>
+                                <button data-id="${p.id}" class="delete-btn p-2 rounded-lg text-red-600 hover:bg-red-50 transition border border-transparent hover:border-red-200" title="Delete Product">
+                                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
             }).join('');
+        }
+
+        async function toggleProductStock(productId) {
+            try {
+                const productRef = doc(db, "products", productId);
+                const productSnap = await getDoc(productRef);
+                if (!productSnap.exists()) return;
+                const pData = productSnap.data();
+                const sizes = pData.sizes || [];
+                const anyInStock = sizes.some(s => s.stock === 'In Stock');
+                const newStockStatus = anyInStock ? 'Sold Out' : 'In Stock';
+
+                const updatedSizes = sizes.map(s => ({
+                    ...s,
+                    stock: newStockStatus
+                }));
+
+                await updateDoc(productRef, {
+                    sizes: updatedSizes,
+                    updatedAt: serverTimestamp()
+                });
+
+                await populateProductsTable();
+            } catch(err) {
+                console.error("Error toggling stock:", err);
+                alert("Failed to toggle stock status: " + err.message);
+            }
         }
 
         async function populateCategoriesTable() {
@@ -1671,12 +1984,24 @@
                 }
             }
 
-            if (target.classList.contains('edit-btn')) {
-                openEditProductModal(target.dataset.id);
+            const editBtn = target.closest('.edit-btn');
+            if (editBtn) {
+                openEditProductModal(editBtn.dataset.id);
             }
-            if (target.classList.contains('delete-btn')) {
-                const productId = target.dataset.id;
-                if (confirm('Are you sure you want to delete this product?')) { await deleteDoc(doc(db, "products", productId)); await populateProductsTable(); }
+            const deleteBtn = target.closest('.delete-btn');
+            if (deleteBtn) {
+                const productId = deleteBtn.dataset.id;
+                if (confirm('Are you sure you want to delete this product?')) { 
+                    await deleteDoc(doc(db, "products", productId)); 
+                    await populateProductsTable(); 
+                }
+            }
+            const toggleStockBtn = target.closest('.toggle-stock-btn');
+            if (toggleStockBtn) {
+                const productId = toggleStockBtn.dataset.id;
+                if (productId) {
+                    await toggleProductStock(productId);
+                }
             }
             if (target.classList.contains('edit-category-btn')) {
                 openEditCategoryModal(target.dataset.id);
