@@ -293,6 +293,40 @@
         </div>
     </div>
 
+    <!-- Clear Orders Modal -->
+    <div id="clear-orders-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 hidden modal">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden modal-content border border-gray-100">
+            <div class="p-6">
+                <div class="w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-red-200 shadow-inner">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 text-center mb-1">Clear Orders</h3>
+                <p class="text-sm text-gray-500 text-center mb-6">Choose how you want to clear orders from the system.</p>
+
+                <div class="space-y-3">
+                    <button id="btn-clear-all-orders" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-md hover:shadow-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        <span>Delete ALL Orders</span>
+                    </button>
+                    <button id="btn-clear-completed-orders" class="w-full bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition">
+                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>Delete Only Delivered & Cancelled</span>
+                    </button>
+                    <button id="btn-cancel-clear-orders" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2.5 px-4 rounded-xl transition">
+                        Cancel
+                    </button>
+                </div>
+                <p id="clear-orders-status-msg" class="text-xs text-center mt-3 font-semibold min-h-[1.25rem]"></p>
+            </div>
+        </div>
+    </div>
+
 
     <script type="module">
         // Import from the config file
@@ -500,12 +534,22 @@
                 }
             });
 
-            ['order-details-modal', 'edit-product-modal', 'edit-category-modal'].forEach(modalId => {
+            ['order-details-modal', 'edit-product-modal', 'edit-category-modal', 'clear-orders-modal'].forEach(modalId => {
                 document.getElementById(modalId)?.addEventListener('click', (e) => {
-                    if (e.target.id === modalId || e.target.closest('#close-modal-btn, #cancel-edit-product-btn, #cancel-edit-category-btn')) {
+                    if (e.target.id === modalId || e.target.closest('#close-modal-btn, #cancel-edit-product-btn, #cancel-edit-category-btn, #btn-cancel-clear-orders')) {
                         document.getElementById(modalId).classList.add('hidden');
                     }
                 });
+            });
+
+            document.getElementById('btn-clear-all-orders')?.addEventListener('click', async () => {
+                if (confirm("Are you absolutely sure you want to permanently delete ALL orders? This cannot be undone.")) {
+                    await clearOrders(false);
+                }
+            });
+
+            document.getElementById('btn-clear-completed-orders')?.addEventListener('click', async () => {
+                await clearOrders(true);
             });
 
             document.getElementById('editProductForm').addEventListener('submit', handleEditProductSubmit);
@@ -847,10 +891,29 @@
         }
 
         async function renderOrdersPage(container) {
-            container.innerHTML = `<h1 class="text-3xl font-bold text-gray-800 mb-6">Manage Orders</h1><div id="orders-container" class="space-y-6"></div>`;
+            container.innerHTML = `
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">Manage Orders</h1>
+                        <p class="text-sm text-gray-500 mt-1">Review, track status, and manage customer orders.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button id="open-clear-orders-modal-btn" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 hover:border-red-300 font-bold text-sm py-2.5 px-4 rounded-xl flex items-center gap-2 shadow-sm transition">
+                            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            <span>Clear Orders</span>
+                        </button>
+                    </div>
+                </div>
+                <div id="orders-container" class="space-y-6"></div>`;
             const orderDocs = (await fetchOrders()).docs;
             const ordersContainer = document.getElementById('orders-container');
-            if (orderDocs.length === 0) { ordersContainer.innerHTML = '<p class="text-gray-600 bg-white p-6 rounded-lg shadow-md">No orders found.</p>'; return; }
+            if (!ordersContainer) return;
+            if (orderDocs.length === 0) { 
+                ordersContainer.innerHTML = '<p class="text-gray-600 bg-white p-8 rounded-lg shadow-md text-center">No orders found.</p>'; 
+                return; 
+            }
             ordersContainer.innerHTML = orderDocs.map(createOrderCardHTML).join('');
         }
 
@@ -999,7 +1062,12 @@
                 </div>
                 <div class="flex justify-between items-center text-sm bg-gray-50 p-3 rounded-md">
                     <p><strong>Notes:</strong> ${orderData.customer?.notes || 'None'}</p>
-                    <div class="action-buttons">${actionButtons}</div>
+                    <div class="flex items-center space-x-2">
+                        <div class="action-buttons">${actionButtons}</div>
+                        <button data-id="${orderId}" class="delete-order-btn text-gray-400 hover:text-red-600 p-1.5 rounded-md hover:bg-red-50 transition ml-2" title="Delete this order">
+                            <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>`;
         }
@@ -1118,6 +1186,12 @@
                                     <button id="modal-update-status-btn" data-id="${orderId}" class="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold py-1.5 px-3 rounded shadow">Update Status</button>
                                 </div>
                                 <p id="modal-status-msg" class="text-xs mt-1 font-medium"></p>
+                                <div class="mt-4 pt-3 border-t flex justify-end">
+                                    <button data-id="${orderId}" class="modal-delete-order-btn bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-1.5 transition" title="Delete this order">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <span>Delete Order</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>`;
@@ -1200,6 +1274,87 @@
                     targetBtn.disabled = false;
                     targetBtn.textContent = targetBtn.dataset.originalText || 'Update Status';
                 }
+            }
+        }
+
+        async function deleteOrder(orderId) {
+            if (!confirm(`Are you sure you want to permanently delete order #${orderId.substring(0, 8)}?`)) {
+                return;
+            }
+            try {
+                await deleteDoc(doc(db, "orders", orderId));
+                const card = document.getElementById(orderId);
+                if (card) card.remove();
+
+                const ordersContainer = document.getElementById('orders-container');
+                if (ordersContainer && ordersContainer.children.length === 0) {
+                    ordersContainer.innerHTML = '<p class="text-gray-600 bg-white p-8 rounded-lg shadow-md text-center">No orders found.</p>';
+                }
+                const modal = document.getElementById('order-details-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    modal.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Error deleting order:", err);
+                alert("Failed to delete order: " + err.message);
+            }
+        }
+
+        async function clearOrders(onlyCompleted = false) {
+            const statusMsg = document.getElementById('clear-orders-status-msg');
+            const btnAll = document.getElementById('btn-clear-all-orders');
+            const btnCompleted = document.getElementById('btn-clear-completed-orders');
+            
+            if (btnAll) btnAll.disabled = true;
+            if (btnCompleted) btnCompleted.disabled = true;
+            if (statusMsg) {
+                statusMsg.textContent = 'Clearing orders...';
+                statusMsg.style.color = '#2563eb';
+            }
+
+            try {
+                const orderDocsSnap = await fetchOrders();
+                const docsToDelete = orderDocsSnap.docs.filter(d => {
+                    if (!onlyCompleted) return true;
+                    const st = d.data().status;
+                    return st === 'Delivered' || st === 'Cancelled' || st === 'Rejected';
+                });
+
+                if (docsToDelete.length === 0) {
+                    if (statusMsg) {
+                        statusMsg.textContent = onlyCompleted ? 'No completed/cancelled orders found.' : 'No orders found to clear.';
+                        statusMsg.style.color = '#6b7280';
+                    }
+                    setTimeout(() => {
+                        document.getElementById('clear-orders-modal')?.classList.add('hidden');
+                    }, 1200);
+                    return;
+                }
+
+                await Promise.all(docsToDelete.map(d => deleteDoc(doc(db, "orders", d.id))));
+
+                if (statusMsg) {
+                    statusMsg.textContent = `Successfully deleted ${docsToDelete.length} order(s)!`;
+                    statusMsg.style.color = '#16a34a';
+                }
+
+                setTimeout(async () => {
+                    document.getElementById('clear-orders-modal')?.classList.add('hidden');
+                    const mainContainer = document.getElementById('main-content');
+                    if (mainContainer) {
+                        await renderOrdersPage(mainContainer);
+                    }
+                }, 800);
+
+            } catch (err) {
+                console.error("Error clearing orders:", err);
+                if (statusMsg) {
+                    statusMsg.textContent = `Error: ${err.message}`;
+                    statusMsg.style.color = '#dc2626';
+                }
+            } finally {
+                if (btnAll) btnAll.disabled = false;
+                if (btnCompleted) btnCompleted.disabled = false;
             }
         }
 
@@ -1549,6 +1704,23 @@
                 }
                 return;
             }
+
+            if (target.closest('#open-clear-orders-modal-btn')) {
+                const msg = document.getElementById('clear-orders-status-msg');
+                if (msg) msg.textContent = '';
+                document.getElementById('clear-orders-modal')?.classList.remove('hidden');
+                return;
+            }
+
+            const deleteOrderBtn = target.closest('.delete-order-btn') || target.closest('.modal-delete-order-btn');
+            if (deleteOrderBtn) {
+                const orderId = deleteOrderBtn.dataset.id;
+                if (orderId) {
+                    await deleteOrder(orderId);
+                }
+                return;
+            }
+
             const orderCard = target.closest('.order-card-clickable');
             if (orderCard && !target.closest('button')) {
                 showOrderDetailsModal(orderCard.id);
