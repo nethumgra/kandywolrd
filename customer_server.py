@@ -2,25 +2,26 @@ import http.server
 import socketserver
 import os
 
-PORT = 3003
+PORT = 3002
 DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 
-class AdminHandler(http.server.SimpleHTTPRequestHandler):
+class StoreHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIRECTORY, **kwargs)
 
     def do_GET(self):
-        if self.path in ('/', '/index.html'):
-            self.send_response(302)
-            self.send_header('Location', '/admin.html')
-            self.end_headers()
-            return
+        clean_path = self.path.split('?')[0].rstrip('/')
+        if clean_path:
+            possible_file = os.path.join(DIRECTORY, clean_path.lstrip('/') + '.html')
+            if os.path.isfile(possible_file):
+                query = ('?' + self.path.split('?')[1]) if '?' in self.path else ''
+                self.path = clean_path + '.html' + query
         return super().do_GET()
 
 if __name__ == '__main__':
     socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("", PORT), AdminHandler) as httpd:
-        print(f"KANDY WORLD Admin Server running on http://localhost:{PORT}")
+    with socketserver.TCPServer(("", PORT), StoreHandler) as httpd:
+        print(f"KANDY WORLD Store Server running on http://localhost:{PORT}")
         while True:
             try:
                 httpd.serve_forever()
